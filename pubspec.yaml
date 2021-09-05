@@ -42,7 +42,7 @@ dependencies:
   firebase_messaging: ^10.0.0
   flutter_local_notifications: ^5.0.0-nullsafety.1
   font_awesome_flutter: ^9.0.0-nullsafety
-  images_picker: ^1.0.0
+  images_picker: ^1.2.4
   google_sign_in: ^5.0.0
   shared_preferences: ^2.0.4
   cached_network_image: ^3.0.0-nullsafety

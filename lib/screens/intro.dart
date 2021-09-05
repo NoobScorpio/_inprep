@@ -61,7 +61,7 @@ class _IntroScreenState extends State<IntroScreen> {
               title: "Welcome Screen",
               body:
                   "Here you can search by categories or by keywords. At the bottom, you can see a signin/signup button",
-              image: _buildImage('1.png'),
+              image: _buildImage('1.jpg'),
               decoration: pageDecoration,
             ),
             PageViewModel(
@@ -84,20 +84,20 @@ class _IntroScreenState extends State<IntroScreen> {
                   "On the left top corner of screen is the more option button. This shows orders, sessions, reviews for consultant"
                   " and sessions, payments for seeker. This includes our settings where user can enable dark mode, pin auth"
                   ", and biometric auth.",
-              image: _buildImage('4.png'),
+              image: _buildImage('4.jpg'),
               decoration: pageDecoration,
             ),
             PageViewModel(
               title: "Profile",
               body:
                   "This is how your profile looks, you can add more information for a more professional look.",
-              image: _buildImage('5.png'),
+              image: _buildImage('5.jpg'),
               decoration: pageDecoration,
             ),
             PageViewModel(
               title: "Edit Profile",
               body: "Editing your profile the way you see fit.",
-              image: _buildImage('8.png'),
+              image: _buildImage('8.jpg'),
               decoration: pageDecoration,
             ),
             PageViewModel(

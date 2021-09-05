@@ -75,7 +75,7 @@ class MessageBubble extends StatelessWidget {
                     showLoader(context);
 
                     // FlutterDownloader.registerCallback(callback);
-                    final dir = await getExternalStorageDirectory();
+                    final dir = await getApplicationDocumentsDirectory();
                     //
                     // var testDir = Platform.isIOS
                     //     ? await getExternalStorageDirectory()

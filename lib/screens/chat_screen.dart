@@ -1165,7 +1165,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void callButton() async {
     bool confirm = await _databaseService.getAppointment(cid: cid);
     if (!confirm && !meetTime)
-      showSnack('No interview set.');
+      showToast(context, "Please set a meeting");
     else {
       _launchURL(user.uid);
     }
