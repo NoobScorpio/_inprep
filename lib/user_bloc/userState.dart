@@ -12,7 +12,6 @@ class UserInitialState extends UserState {
 
 class UserLoadingState extends UserState {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -22,7 +21,6 @@ class UserLoadedState extends UserState {
   UserLoadedState({this.user});
 
   @override
-  // TODO: implement props
   List<Object> get props => [user];
 }
 
@@ -32,6 +30,5 @@ class UserErrorState extends UserState {
   UserErrorState({this.message});
 
   @override
-  // TODO: implement props
   List<Object> get props => [message];
 }

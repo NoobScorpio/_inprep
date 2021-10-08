@@ -27,3 +27,6 @@ private func registerPlugins(registry: FlutterPluginRegistry) {
        FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
     }
 }
+func applicationDidBecomeActive(_ application: UIApplication) {
+  application.applicationIconBadgeNumber = 0;
+}

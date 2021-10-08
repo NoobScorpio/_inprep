@@ -4,8 +4,8 @@ import 'package:InPrep/auth/auth.dart';
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/profile_widgets.dart';
-import 'package:InPrep/screens/profile_view.dart';
-import '../screens/chat_screen.dart';
+import 'package:InPrep/screens/profile_screens/profile_view.dart';
+import '../screens/screens/chat_screen.dart';
 import 'package:provider/provider.dart';
 
 class JobSearch extends StatefulWidget {

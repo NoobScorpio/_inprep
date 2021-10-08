@@ -1,6 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:InPrep/models/meeting.dart';
-import 'package:InPrep/screens/date_time.dart';
+import 'package:InPrep/models/offer.dart';
+import 'package:InPrep/models/user.dart';
+import 'package:InPrep/screens/screens/date_time.dart';
+import 'package:InPrep/screens/group/invite_screen.dart';
+import 'package:InPrep/screens/profile_screens/profile_view.dart';
+import 'package:InPrep/utils/loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,14 +16,21 @@ import 'package:InPrep/models/order.dart';
 import 'package:InPrep/models/payment.dart';
 import 'package:InPrep/models/session.dart';
 import 'package:InPrep/models/message.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:instant/instant.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OfferCard extends StatelessWidget {
-  final meetsObjects;
+  final List<Meeting> meetsObjects;
   final List<Widget> meets;
   final cid;
+  final currUser;
   final offerCancelled;
   final accepted;
   final sid;
+  final skype;
+  final meetTime;
   final rid;
   final displayName;
   final name;
@@ -25,7 +38,7 @@ class OfferCard extends StatelessWidget {
   final cost;
   final meid;
   final declined;
-  final offer;
+  final Offer offer;
   final nameRec;
   final dark;
   OfferCard({
@@ -50,6 +63,9 @@ class OfferCard extends StatelessWidget {
     this.sid,
     this.meets,
     this.offer,
+    this.skype,
+    this.meetTime,
+    this.currUser,
   });
   final String sender;
   final bool isMe;
@@ -83,7 +99,7 @@ class OfferCard extends StatelessWidget {
             ),
             elevation: 6,
             child: Container(
-              height: 335,
+              height: 330,
               width: 300,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -93,117 +109,151 @@ class OfferCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 12.0, right: 12, top: 12, bottom: 1),
-                            child: Text(
-                              'Meeting',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          if (isMe)
-                            PopupMenuButton(
-                                // color: Colors.black,
-                                child: Icon(
-                                  Icons.more_vert,
-                                ),
-                                onSelected: (value) async {
-                                  if (value == 2) {
-                                    DatabaseService db = DatabaseService();
-                                    DocumentSnapshot msg = await db
-                                        .chatsCollection
-                                        .doc(cid)
-                                        .collection('messages')
-                                        .doc(meid)
-                                        .get();
-                                    Message message =
-                                        Message.fromJson(msg.data());
-                                    message.offer.cancel = true;
-                                    await db.chatsCollection
-                                        .doc(cid)
-                                        .collection('messages')
-                                        .doc(meid)
-                                        .update(message.toJson());
-                                  }
-                                  if (value == 1) {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MyDateTime(
-                                                  dark: dark,
-                                                  cid: cid,
-                                                  sid: sid,
-                                                  rid: rid,
-                                                  displayName: displayName,
-                                                  name: name,
-                                                  edit: true,
-                                                  date: appointDate,
-                                                  time: appointTime,
-                                                  cost: cost,
-                                                  meets: meetsObjects,
-                                                  oid: offer.oid,
-                                                  meid: meid,
-                                                )));
-                                  }
-                                },
-                                itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                          value: 1,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        2, 2, 8, 2),
-                                                child: Icon(
-                                                  Icons.edit,
-                                                ),
-                                              ),
-                                              Text('Edit Offer')
-                                            ],
-                                          )),
-                                      PopupMenuItem(
-                                          value: 2,
-                                          child: Row(
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        2, 2, 8, 2),
-                                                child: Icon(
-                                                  Icons.cancel,
-                                                ),
-                                              ),
-                                              Text('Cancel Offer')
-                                            ],
-                                          )),
-                                    ]),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Divider(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          'Data & time for appointment',
-                          style: TextStyle(
-                              // color: Colors.grey,
-                              ),
-                        ),
-                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12.0, right: 12, top: 12, bottom: 1),
+                                child: Text(
+                                  'Meeting',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              if (isMe && !offerCancelled)
+                                PopupMenuButton(
+                                    // color: Colors.black,
+                                    child: Icon(
+                                      Icons.more_vert,
+                                    ),
+                                    onSelected: (value) async {
+                                      if (value == 2) {
+                                        DatabaseService db = DatabaseService();
+                                        DocumentSnapshot msg = await db
+                                            .chatsCollection
+                                            .doc(cid)
+                                            .collection('messages')
+                                            .doc(meid)
+                                            .get();
+                                        Message message =
+                                            Message.fromJson(msg.data());
+                                        message.offer.cancel = true;
+                                        await db.chatsCollection
+                                            .doc(cid)
+                                            .collection('messages')
+                                            .doc(meid)
+                                            .update(message.toJson());
+                                      }
+                                      if (value == 1) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MyDateTime(
+                                                      dark: dark,
+                                                      cid: cid,
+                                                      sid: sid,
+                                                      rid: rid,
+                                                      displayName: displayName,
+                                                      zoomLink: offer.link,
+                                                      name: name,
+                                                      edit: true,
+                                                      date: appointDate,
+                                                      time: appointTime,
+                                                      cost: cost,
+                                                      meets: meetsObjects,
+                                                      oid: offer.oid,
+                                                      meid: meid,
+                                                    )));
+                                      }
+                                      if (value == 3) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    InviteScreen(
+                                                      currUser: currUser,
+                                                      link: offer.link,
+                                                      date:
+                                                          meetsObjects[0].date,
+                                                      time:
+                                                          meetsObjects[0].time,
+                                                    )));
+                                      }
+                                    },
+                                    itemBuilder: (context) => [
+                                          if (!accepted)
+                                            PopupMenuItem(
+                                                value: 1,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(2, 2, 8, 2),
+                                                      child: Icon(
+                                                        Icons.edit,
+                                                      ),
+                                                    ),
+                                                    Text('Edit Offer')
+                                                  ],
+                                                )),
+                                          if (accepted)
+                                            PopupMenuItem(
+                                                value: 3,
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .fromLTRB(2, 2, 8, 2),
+                                                      child: Icon(
+                                                        Icons.share,
+                                                      ),
+                                                    ),
+                                                    Text('Invite')
+                                                  ],
+                                                )),
+                                          PopupMenuItem(
+                                              value: 2,
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(2, 2, 8, 2),
+                                                    child: Icon(
+                                                      Icons.cancel,
+                                                    ),
+                                                  ),
+                                                  Text('Cancel Offer')
+                                                ],
+                                              )),
+                                        ]),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Divider(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Text(
+                                'Date & time for appointment',
+                                style: TextStyle(
+                                    // color: Colors.grey,
+                                    ),
+                              ),
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -241,8 +291,9 @@ class OfferCard extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    '${appointTime + " " + (meetsObjects[0].timezone ?? "")}',
+                                    // '${appointTime + " " + (meetsObjects[0].timezone ?? "")}',
                                     // 'ODDER',
+                                    "$appointTime",
                                     style: TextStyle(
                                         // color: Colors.black,
                                         fontWeight: FontWeight.w500,
@@ -256,11 +307,14 @@ class OfferCard extends StatelessWidget {
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                                Icon(
-                                  Icons.monetization_on,
-                                  color: dark
-                                      ? Colors.black
-                                      : Theme.of(context).primaryColor,
+                                InkWell(
+                                  onTap: () {},
+                                  child: Icon(
+                                    Icons.monetization_on,
+                                    color: dark
+                                        ? Colors.black
+                                        : Theme.of(context).primaryColor,
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -276,252 +330,421 @@ class OfferCard extends StatelessWidget {
                               ],
                             ),
                           ),
+                          if (accepted)
+                            Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: Container(
+                                        height: 35,
+                                        child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          onPressed: () async {
+                                            showLoader(context);
+                                            bool confirm =
+                                                await _databaseService
+                                                    .getAppointment(cid: cid);
+                                            Navigator.pop(context);
+                                            if (!confirm)
+                                              showToast(context,
+                                                  'No meeting scheduled');
+                                            else if (!meetTime)
+                                              showToast(context,
+                                                  'Kindly try again during meeting time');
+                                            else {
+                                              showToast(
+                                                  context, 'Launching Skype');
+                                              _launchURL(
+                                                  context: context,
+                                                  rid: rid,
+                                                  sid: sid,
+                                                  userID: skype);
+                                            }
+                                          },
+                                          color: Colors.blueAccent,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.skype,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Skype',
+                                                style: TextStyle(
+                                                    color: dark
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: Container(
+                                        height: 35,
+                                        child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          onPressed: () async {
+                                            if (offer.link == "") {
+                                              showToast(context,
+                                                  "Zoom meeting link not added");
+                                            } else {
+                                              showLoader(context);
+                                              bool confirm =
+                                                  await _databaseService
+                                                      .getAppointment(cid: cid);
+                                              Navigator.pop(context);
+                                              if (!confirm)
+                                                showToast(context,
+                                                    'No meeting scheduled');
+                                              else if (!meetTime)
+                                                showToast(context,
+                                                    'Kindly try again during meeting time');
+                                              else {
+                                                showToast(
+                                                    context, 'Launching Zoom');
+                                                if (await canLaunch(
+                                                    offer.link)) {
+                                                  launch(offer.link);
+                                                }
+                                              }
+                                            }
+                                          },
+                                          color: Colors.blueAccent,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                FontAwesomeIcons.video,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                'Zoom',
+                                                style: TextStyle(
+                                                    color: dark
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Divider(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  height: 50,
-                                  child: FlatButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    onPressed: () async {
-                                      if (Platform.isIOS) {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                CupertinoAlertDialog(
-                                                  title: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child:
-                                                        Text("Meeting Details"),
-                                                  ),
-                                                  content: Container(
-                                                    height: 35.0 * meets.length,
-                                                    child: Column(
-                                                      children: meets,
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    CupertinoDialogAction(
-                                                      onPressed: () async {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                ));
-                                      } else {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                AlertDialog(
-                                                  title:
-                                                      Text("Meeting Details"),
-                                                  content: Container(
-                                                    height: 35.0 * meets.length,
-                                                    child: Column(
-                                                      children: meets,
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    FlatButton(
-                                                      child: Text('Ok'),
-                                                      onPressed: () async {
-                                                        Navigator.pop(context);
-                                                      },
-                                                    ),
-                                                  ],
-                                                ));
-                                      }
-                                    },
-                                    color: Colors.orange,
-                                    child: Text(
-                                      'Details',
-                                      style: TextStyle(
-                                          color: dark
-                                              ? Colors.black
-                                              : Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            child: Divider(
+                              color: Colors.black87,
+                            ),
+                          ),
+                          if (!accepted && !offerCancelled)
+                            Padding(
+                              padding: const EdgeInsets.all(1.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        height: 50,
+                                        child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          onPressed: () async {
+                                            if (Platform.isIOS) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          CupertinoAlertDialog(
+                                                            title: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                  "Meeting Details"),
+                                                            ),
+                                                            content: Container(
+                                                              height: 35.0 *
+                                                                  meets.length,
+                                                              child: Column(
+                                                                children: meets,
+                                                              ),
+                                                            ),
+                                                            actions: <Widget>[
+                                                              CupertinoDialogAction(
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                    Text('Ok'),
+                                                              ),
+                                                            ],
+                                                          ));
+                                            } else {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          AlertDialog(
+                                                            title: Text(
+                                                                "Meeting Details"),
+                                                            content: Container(
+                                                              height: 35.0 *
+                                                                  meets.length,
+                                                              child: Column(
+                                                                children: meets,
+                                                              ),
+                                                            ),
+                                                            actions: <Widget>[
+                                                              FlatButton(
+                                                                child:
+                                                                    Text('Ok'),
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ));
+                                            }
+                                          },
+                                          color: Colors.orange,
+                                          child: Text(
+                                            'Details',
+                                            style: TextStyle(
+                                                color: dark
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  height: 50,
-                                  child: FlatButton(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    onPressed: () async {
-                                      if (!accepted && !declined) {
-                                        if (seeker &&
-                                            !isMe &&
-                                            !offerCancelled) {
-                                          print(rid);
-                                          if (Platform.isIOS) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    CupertinoAlertDialog(
-                                                      title: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Text("Meeting"),
-                                                      ),
-                                                      content: Container(
-                                                        height: 120,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "Note: Additional 5\$ will be charged for InPrep services.",
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        height: 50,
+                                        child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          onPressed: () async {
+                                            if (!accepted && !declined) {
+                                              if (seeker &&
+                                                  !isMe &&
+                                                  !offerCancelled) {
+                                                print(rid);
+                                                if (Platform.isIOS) {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          CupertinoAlertDialog(
+                                                            title: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Text(
+                                                                  "Meeting"),
                                                             ),
-                                                            SizedBox(
-                                                              height: 15,
+                                                            content: Container(
+                                                              height: 120,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    "Note: Additional 5\$ will be charged for InPrep services.",
+                                                                    style: TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 15,
+                                                                  ),
+                                                                  Text(
+                                                                      "Do you want to accept the offer?"),
+                                                                  SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  Text(
+                                                                      "Total charges: ${cost + 5}\$")
+                                                                ],
+                                                              ),
                                                             ),
-                                                            Text(
-                                                                "Do you want to accept the offer?"),
-                                                            SizedBox(
-                                                              height: 5,
+                                                            actions: <Widget>[
+                                                              CupertinoDialogAction(
+                                                                onPressed:
+                                                                    () async {
+                                                                  yes(
+                                                                      context,
+                                                                      'ios',
+                                                                      cost);
+                                                                },
+                                                                child:
+                                                                    Text('Yes'),
+                                                              ),
+                                                              CupertinoDialogAction(
+                                                                onPressed:
+                                                                    () async {
+                                                                  no(context,
+                                                                      'ios');
+                                                                },
+                                                                child:
+                                                                    Text("No"),
+                                                              )
+                                                            ],
+                                                          ));
+                                                } else {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          AlertDialog(
+                                                            title:
+                                                                Text("Meeting"),
+                                                            content: Container(
+                                                              height: 140,
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    "Note: Thank you for using inPrep please be advised we charge a \$5.00 fee per transaction for our services in the application.",
+                                                                    style: TextStyle(
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 15,
+                                                                  ),
+                                                                  Text(
+                                                                      "Do you want to accept the offer?"),
+                                                                  SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  Text(
+                                                                      "Total charges: ${cost + 5}\$")
+                                                                ],
+                                                              ),
                                                             ),
-                                                            Text(
-                                                                "Total charges: ${cost + 5}\$")
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      actions: <Widget>[
-                                                        CupertinoDialogAction(
-                                                          onPressed: () async {
-                                                            yes(context, 'ios',
-                                                                cost);
-                                                          },
-                                                          child: Text('Yes'),
-                                                        ),
-                                                        CupertinoDialogAction(
-                                                          onPressed: () async {
-                                                            no(context, 'ios');
-                                                          },
-                                                          child: Text("No"),
-                                                        )
-                                                      ],
-                                                    ));
-                                          } else {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    AlertDialog(
-                                                      title: Text("Meeting"),
-                                                      content: Container(
-                                                        height: 140,
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "Note: Thank you for using inPrep please be advised we charge a \$5.00 fee per transaction for our services in the application.",
-                                                              style: TextStyle(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 15,
-                                                            ),
-                                                            Text(
-                                                                "Do you want to accept the offer?"),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Text(
-                                                                "Total charges: ${cost + 5}\$")
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      actions: <Widget>[
-                                                        FlatButton(
-                                                          child: Text('No'),
-                                                          onPressed: () async {
-                                                            no(context,
-                                                                'android');
-                                                          },
-                                                        ),
-                                                        FlatButton(
-                                                          child: Text('Yes'),
-                                                          onPressed: () async {
-                                                            yes(
-                                                                context,
-                                                                'android',
-                                                                cost);
-                                                          },
-                                                        ),
-                                                      ],
-                                                    ));
-                                          }
-                                        }
-                                      } else {}
-                                    },
-                                    color: seeker &&
-                                            !isMe &&
-                                            !offerCancelled &&
-                                            !declined
-                                        ? (accepted
-                                            ? Colors.grey
-                                            : (declined
-                                                ? Colors.red
-                                                : Colors.green))
-                                        : (Colors.grey),
-                                    child: Text(
-                                      offerCancelled
-                                          ? 'Withdrawn'
-                                          : (accepted
-                                              ? 'Accepted'
-                                              : (declined
-                                                  ? 'Declined'
-                                                  : 'Accept')),
-                                      style: TextStyle(
-                                          color: dark
-                                              ? Colors.black
-                                              : Colors.white,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 16),
+                                                            actions: <Widget>[
+                                                              FlatButton(
+                                                                child:
+                                                                    Text('No'),
+                                                                onPressed:
+                                                                    () async {
+                                                                  no(context,
+                                                                      'android');
+                                                                },
+                                                              ),
+                                                              FlatButton(
+                                                                child:
+                                                                    Text('Yes'),
+                                                                onPressed:
+                                                                    () async {
+                                                                  yes(
+                                                                      context,
+                                                                      'android',
+                                                                      cost);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ));
+                                                }
+                                              }
+                                            } else {}
+                                          },
+                                          color: seeker &&
+                                                  !isMe &&
+                                                  !offerCancelled &&
+                                                  !declined
+                                              ? (accepted
+                                                  ? Colors.grey
+                                                  : (declined
+                                                      ? Colors.red
+                                                      : Colors.green))
+                                              : (Colors.grey),
+                                          child: Text(
+                                            offerCancelled
+                                                ? 'Withdrawn'
+                                                : (accepted
+                                                    ? 'Accepted'
+                                                    : (declined
+                                                        ? 'Declined'
+                                                        : 'Accept')),
+                                            style: TextStyle(
+                                                color: dark
+                                                    ? Colors.black
+                                                    : Colors.white,
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          if (accepted)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text("Offer Accepted"),
+                              ),
+                            ),
+                          if (offerCancelled)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text("Offer Cancelled"),
+                              ),
+                            )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -718,6 +941,103 @@ class OfferCard extends StatelessWidget {
       }
     } else {
       // print('NO ID');
+    }
+  }
+
+  _launchURL({context, sid, rid, userID}) async {
+    var link = await _databaseService.getSkype(uid: rid == userID ? sid : rid);
+    try {
+      if (await canLaunch('skype:$link')) {
+        await launch('skype:$link');
+      } else {
+        if (Platform.isIOS)
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => CupertinoAlertDialog(
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Could not call"),
+                    ),
+                    content: Container(
+                        height: 200,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Text("This can be due to following reasons"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("You do not have skype installed."),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("Skpye id is inavalid"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  "You have skpye installed but not setup your id."),
+                            ),
+                          ],
+                        )),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                        child: Text('ok'),
+                      )
+                    ],
+                  ));
+        else
+          showDialog(
+              context: context,
+              builder: (BuildContext context) => AlertDialog(
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Could not call"),
+                    ),
+                    content: Container(
+                        height: 200,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  "This can be due to following reasons",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("You do not have skype installed."),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text("skype id is invalid"),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  "You have skype installed but not setup your id."),
+                            ),
+                          ],
+                        )),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () async {
+                          Navigator.pop(context);
+                        },
+                        child: Text('ok'),
+                      )
+                    ],
+                  ));
+      }
+    } catch (e) {
+      // showSnack('Wrong skype id provided');
     }
   }
 }

@@ -18,6 +18,7 @@ class MyUser {
   bool profile;
   String pass;
   int badge;
+  String pushToken;
   String uname;
   bool seeker;
   String country;
@@ -65,6 +66,7 @@ class MyUser {
     this.experiences,
     this.educations,
     this.skills,
+    this.pushToken,
     this.portfolio,
     this.reviews,
     this.priceFrom,
@@ -74,6 +76,7 @@ class MyUser {
   MyUser.fromJson(Map<String, dynamic> json) {
     read = json['read'];
     badge = json['badge'];
+    pushToken = json['pushToken'];
     cover = json['cover'];
     other = json['other'];
     subCategory = json['subCategory'];
@@ -146,6 +149,7 @@ class MyUser {
     data['verified'] = this.verified;
     data['category'] = this.category;
     data['skype'] = this.skype;
+    data['pushToken'] = this.pushToken;
     data['email'] = this.email;
     data['state'] = this.state;
     data['cover'] = this.cover;

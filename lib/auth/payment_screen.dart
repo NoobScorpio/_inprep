@@ -1,3 +1,4 @@
+import 'package:InPrep/utils/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -17,13 +18,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String url = "";
   double progress = 0;
   final GlobalKey<ScaffoldState> globKeyPay = new GlobalKey<ScaffoldState>();
-  void showSnack(text) {
-    globKeyPay.currentState.showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Text(text),
-      duration: Duration(seconds: 5),
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +25,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
       return '''
   <html>
   <body onload="document.f.submit();">
-  <form id="f" name="f" method="get" action="https://paypal-testing-inprep.herokuapp.com/?price=${widget.cost}&date=${widget.date}&name=${widget.name}&time=${widget.time}">
+  <form id="f" name="f" method="get" action="https://paypal-testing-inprep.herokuapp.com/?price=${widget.cost}&date=${widget.date ?? ""}&name=${widget.name}&time=${widget.time ?? ""}">
   <input type="hidden" name="price" value="${widget.cost}"/>
-  <input type="hidden" name="date" value="${widget.date}"/>
-  <input type="hidden" name="name" value="${widget.name}"/>
+  <input type="hidden" name="date" value="${widget.date ?? ""}"/>
+  <input type="hidden" name="name" value="${widget.name ?? ""}"/>
   <input type="hidden" name="time" value="${widget.time}"/>
   </form>
   </body>
@@ -57,7 +51,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 page.toString().indexOf('=P') + 1,
                 page.toString().indexOf('&t'));
             print(id);
-            showSnack('You will be redirected to App shortly');
+            showToast(context, "You will be redirected to App shortly");
             var boolTrue = false;
             await Future.delayed(Duration(seconds: 2)).then((value) {
               boolTrue = true;

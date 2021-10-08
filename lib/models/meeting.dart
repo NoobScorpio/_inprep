@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Meeting {
   String mid;
   String seekId;
@@ -6,11 +8,13 @@ class Meeting {
   String date;
   bool completed;
   String timezone;
+  Timestamp dateTime;
   Meeting(
       {this.mid,
       this.seekId,
       this.conId,
       this.time,
+      this.dateTime,
       this.date,
       this.timezone,
       this.completed});
@@ -18,6 +22,7 @@ class Meeting {
   Meeting.fromJson(Map<String, dynamic> json) {
     mid = json['mid'];
     timezone = json['timezone'];
+    dateTime = json['dateTime'];
     seekId = json['seekId'];
     conId = json['conId'];
     time = json['time'];
@@ -29,6 +34,7 @@ class Meeting {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['mid'] = this.mid;
     data['timezone'] = this.timezone;
+    data['dateTime'] = this.dateTime;
     data['seekId'] = this.seekId;
     data['conId'] = this.conId;
     data['time'] = this.time;

@@ -6,7 +6,14 @@ class Portfolio {
   String uid;
   String image;
   bool current;
-  Portfolio({this.pid, this.title, this.to, this.from, this.uid, this.current});
+  Portfolio(
+      {this.pid,
+      this.title,
+      this.to,
+      this.from,
+      this.uid,
+      this.current,
+      this.image});
 
   Portfolio.fromJson(Map<String, dynamic> json) {
     pid = json['pid'];

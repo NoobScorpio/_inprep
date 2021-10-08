@@ -1,12 +1,16 @@
 import 'package:InPrep/models/Job.dart';
 import 'package:InPrep/models/Skill.dart';
+import 'package:InPrep/models/contact.dart';
 import 'package:InPrep/models/education.dart';
 import 'package:InPrep/models/experience.dart';
 import 'package:InPrep/models/portfolio.dart';
 import 'package:InPrep/models/review.dart';
+import 'package:InPrep/utils/app_utils.dart';
 import 'package:InPrep/utils/loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:getflutter/components/rating/gf_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -275,7 +279,7 @@ Row buildSkype({String uname}) {
         color: Colors.blue,
         icon: Icon(FontAwesomeIcons.skype),
         onPressed: () {
-          // _launchURL("https://www.skype.com/");
+          _launchURL("zoom:");
         },
       ),
       SizedBox(width: 10.0),
@@ -345,6 +349,7 @@ Row buildProfileHeader(context, {name, designation, city, country}) {
 
 Widget buildHeader(context,
     {category,
+    uid,
     state,
     photoUrl,
     name,
@@ -362,78 +367,51 @@ Widget buildHeader(context,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: <Widget>[
       SizedBox(width: 20.0),
-      // CachedNetworkImage(
-      //   imageUrl: photoUrl ?? '',
-      //   imageBuilder: (context, imageProvider) => Container(
-      //     width: 100.0,
-      //     height: 100.0,
-      //     child: CircleAvatar(
-      //         radius: 65,
-      //         backgroundColor: Colors.black12,
-      //         child: photoUrl == null || photoUrl == ''
-      //             ? CircleAvatar(
-      //                 backgroundColor: color,
-      //                 radius: 60.0,
-      //                 child: Center(
-      //                   child: Text(
-      //                     '${name.toString().substring(0, 1).toUpperCase()}',
-      //                     style: TextStyle(fontSize: 24),
-      //                   ),
-      //                 ),
-      //               )
-      //             : CircleAvatar(
-      //                 radius: 60.0,
-      //                 backgroundImage: NetworkImage('$photoUrl'))),
-      //   ),
-      //   placeholder: (context, url) => Container(
-      //     width: 120.0,
-      //     height: 120.0,
-      //     child: CircleAvatar(
-      //         radius: 70,
-      //         backgroundColor: Colors.black12,
-      //         child: CircularProgressIndicator()),
-      //   ),
-      //   errorWidget: (context, url, error) => Container(
-      //     width: 120.0,
-      //     height: 120.0,
-      //     child: CircleAvatar(
-      //         radius: 75,
-      //         backgroundColor: Colors.black12,
-      //         child: CircleAvatar(
-      //           radius: 70.0,
-      //           child: Center(
-      //             child: Text(
-      //               '${name.toString().substring(0, 1).toUpperCase()}',
-      //               style: TextStyle(fontSize: 24),
-      //             ),
-      //           ),
-      //         )),
-      //   ),
-      // ),
-      // SizedBox(width: 50.0),
       Stack(
         children: [
           Center(
-            child: Container(
-              height: 125,
-              width: MediaQuery.of(context).size.width - 50,
-              decoration: cover == "" || cover == null
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: Colors.black,
-                      gradient: LinearGradient(colors: [
-                        Theme.of(context).primaryColor,
-                        Colors.black
-                      ], tileMode: TileMode.repeated))
-                  : BoxDecoration(
+            child: CachedNetworkImage(
+              imageUrl: cover ?? "",
+              imageBuilder: (context, image) {
+                return Container(
+                  height: 125,
+                  width: MediaQuery.of(context).size.width - 50,
+                  decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
                       color: Colors.black,
                       image: DecorationImage(
-                        image: NetworkImage(
-                          cover,
-                        ),
+                        image: image,
                         fit: BoxFit.cover,
                       )),
+                );
+              },
+              placeholder: (context, image) {
+                return Container(
+                  height: 125,
+                  width: MediaQuery.of(context).size.width - 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: Colors.black,
+                  ),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.green,
+                    ),
+                  ),
+                );
+              },
+              errorWidget: (context, image, err) {
+                return Container(
+                  height: 125,
+                  width: MediaQuery.of(context).size.width - 50,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      color: Theme.of(context).primaryColor,
+                      image: DecorationImage(
+                        image: AssetImage("assets/icons/logo1024.png"),
+                      )),
+                );
+              },
             ),
           ),
           Center(
@@ -449,7 +427,7 @@ Widget buildHeader(context,
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter)),
                 child: CachedNetworkImage(
-                  imageUrl: photoUrl,
+                  imageUrl: photoUrl ?? "",
                   imageBuilder: (context, image) {
                     return Container(
                       width: 100.0,
@@ -517,91 +495,49 @@ Widget buildHeader(context,
           ),
         ],
       ),
-      // Container(
-      //   width: 100.0,
-      //   height: 100.0,
-      //   decoration: BoxDecoration(
-      //     borderRadius: BorderRadius.all(Radius.circular(360)),
-      //     color: Theme.of(context).primaryColor,
-      //   ),
-      //   child: Padding(
-      //     padding: const EdgeInsets.all(2.0),
-      //     child: CachedNetworkImage(
-      //       imageUrl: photoUrl,
-      //       imageBuilder: (context, image) {
-      //         return Container(
-      //           width: 100.0,
-      //           height: 100.0,
-      //           decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.all(Radius.circular(360)),
-      //               image: DecorationImage(
-      //                   image: NetworkImage(photoUrl), fit: BoxFit.cover)),
-      //         );
-      //       },
-      //       placeholder: (context, image) {
-      //         return Container(
-      //           width: 100.0,
-      //           height: 100.0,
-      //           child: Center(
-      //             child: CircularProgressIndicator(
-      //               backgroundColor: Colors.green,
-      //             ),
-      //           ),
-      //         );
-      //       },
-      //       errorWidget: (context, image, err) {
-      //         if (photoUrl == "" || photoUrl == null)
-      //           return Container(
-      //             decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.all(Radius.circular(360)),
-      //               color: Theme.of(context).primaryColor,
-      //             ),
-      //             width: 60.0,
-      //             height: 60.0,
-      //             child: Center(
-      //               child: Center(
-      //                 child: Text(
-      //                   "${name[0].toUpperCase()}",
-      //                   style: TextStyle(
-      //                     color: Colors.white,
-      //                     fontSize: 42,
-      //                     fontWeight: FontWeight.w500,
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           );
-      //         else {
-      //           return Container(
-      //             width: 60.0,
-      //             height: 60.0,
-      //             child: Center(
-      //               child: InkWell(
-      //                 onTap: () {
-      //                   showToast(context,
-      //                       "Error loading profile image. Re-upload to view");
-      //                 },
-      //                 child: Center(
-      //                   child: Icon(Icons.error),
-      //                 ),
-      //               ),
-      //             ),
-      //           );
-      //         }
-      //       },
-      //     ),
-      //   ),
-      // ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              name == null ? 'Name' : "${name.toString().toUpperCase()}",
-              maxLines: 2,
-              style: TextStyle(
-                  fontSize: 20.0, fontWeight: FontWeight.bold, color: color),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  name == null ? 'Name' : "${name.toString().toUpperCase()}",
+                  maxLines: 2,
+                  style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: color),
+                ),
+                InkWell(
+                  onTap: () async {
+                    String url = await AppUtils.buildDynamicLink(
+                        uid: uid,
+                        image: photoUrl ??
+                            "https://inprepapp.com/assets/images/logo.png",
+                        desc: designation ?? "InPrep User",
+                        name: name.toString().toUpperCase());
+                    print(url);
+                    Clipboard.setData(ClipboardData(text: url));
+                    await FlutterShare.share(
+                      title: name,
+                      text: designation,
+                      linkUrl: url,
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
+                      Icons.share,
+                      size: 15,
+                      color:
+                          dark ? Colors.grey : Theme.of(context).primaryColor,
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
           SizedBox(height: 5.0),
@@ -690,10 +626,12 @@ _launchURL(link) async {
   try {
     if (await canLaunch(link)) {
       await launch(link);
+    } else {
+      print('Could not launch $link');
     }
   } catch (e) {
-    // print(e);
-    // print('Could not launch $link');
+    print(e);
+    print('Could not launch $link');
   }
 }
 
@@ -723,7 +661,44 @@ Widget buildPriceRange(context, dark, {String from, String to}) {
   );
 }
 
-Row buildSocialsRow({fb, git, linkedin, tiktok, insta, dark}) {
+Widget buildContact({Contact contact, context}) {
+  return Column(
+    children: [
+      if (contact != null && contact.number != '')
+        Row(
+          children: <Widget>[
+            SizedBox(width: 30.0),
+            Icon(
+              Icons.phone,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(width: 10.0),
+            Text(
+              "${contact.code}-${contact.number}",
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ],
+        ),
+      if (contact == null && contact.number == '')
+        Row(
+          children: <Widget>[
+            SizedBox(width: 30.0),
+            Icon(
+              Icons.phone,
+              color: Theme.of(context).primaryColor,
+            ),
+            SizedBox(width: 10.0),
+            Text(
+              "Not Added",
+              style: TextStyle(fontSize: 16.0),
+            ),
+          ],
+        ),
+    ],
+  );
+}
+
+Row buildSocialsRow({fb, git, linkedin, tiktok, insta, dark, context}) {
   // print("DARK IN SOCIAL $dark");
   return Row(
     children: <Widget>[
@@ -747,8 +722,10 @@ Row buildSocialsRow({fb, git, linkedin, tiktok, insta, dark}) {
       IconButton(
         color: Colors.blue,
         icon: Icon(FontAwesomeIcons.linkedin),
-        onPressed: () {
-          _launchURL("https://www.linkedin.com/in/$linkedin");
+        onPressed: () async {
+          String url = "https://www.linkedin.com/in/$linkedin";
+
+          _launchURL(url);
         },
       ),
       SizedBox(width: 5.0),

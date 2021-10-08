@@ -12,7 +12,6 @@ class Chat {
   String acceptedOfferID;
   bool confirm = false;
   List<String> users;
-
   Chat(
       {this.sid,
       this.sRead,

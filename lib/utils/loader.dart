@@ -34,7 +34,7 @@ void commentNotification({Blog blog, user, Comment comm}) async {
         await DatabaseService().userCollection.doc(blog.uid).get();
     MyUser poster = MyUser.fromJson(usr.data());
     var message = "${user.displayName} commented on your blog \"${comm.body}\"";
-    var token = "${usr.data()['pushToken']}";
+    var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
           "https://inprepapp.com/notify.php?token=$token&message=$message"));
@@ -59,7 +59,7 @@ void commentReplyNotification({MyUser user, Reply reply}) async {
     var message =
         "${user.displayName} replied to your comment \n\"${comm.body}\"\non "
         "a blog posted by \n ${blog.name}";
-    var token = "${usr.data()['pushToken']}";
+    var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
           "https://inprepapp.com/notify.php?token=$token&message=$message"));
@@ -74,7 +74,7 @@ void likeNotification({blog, user}) async {
         await DatabaseService().userCollection.doc(blog.uid).get();
     MyUser poster = MyUser.fromJson(usr.data());
     var message = "${user.displayName} liked your blog";
-    var token = "${usr.data()['pushToken']}";
+    var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
           "https://inprepapp.com/notify.php?token=$token&message=$message"));
@@ -90,10 +90,35 @@ void likeCommNotification({Blog blog, user, Comment comment}) async {
     MyUser poster = MyUser.fromJson(usr.data());
     var message =
         "${user.displayName} liked your comment \"${comment.body}\" on a blog posted by ${blog.name}";
-    var token = "${usr.data()['pushToken']}";
+    var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
           "https://inprepapp.com/notify.php?token=$token&message=$message"));
+  } catch (e) {
+    print('LIKED NOTIFICATION ERROR $e');
+  }
+}
+
+void badgeResetNotification({String uid}) async {
+  try {
+    DocumentSnapshot usr =
+        await DatabaseService().userCollection.doc(uid).get();
+    MyUser poster = MyUser.fromJson(usr.data());
+    await DatabaseService().userCollection.doc(uid).update({"badge": 0});
+    await http.get(Uri.parse(
+        "https://inprepapp.com/notify.php?token1=${poster.pushToken}"));
+  } catch (e) {
+    print('LIKED NOTIFICATION ERROR $e');
+  }
+}
+
+void sendNotification({MyUser user, message}) async {
+  try {
+    DocumentSnapshot usr =
+        await DatabaseService().userCollection.doc(user.uid).get();
+    MyUser poster = MyUser.fromJson(usr.data());
+    await http.get(Uri.parse(
+        "https://inprepapp.com/notify.php?token=${poster.pushToken}&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }

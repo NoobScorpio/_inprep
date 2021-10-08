@@ -1,6 +1,11 @@
 import 'package:InPrep/models/blog.dart';
+import 'package:InPrep/models/group.dart';
+import 'package:InPrep/models/groupMessage.dart';
+import 'package:InPrep/models/group_link.dart';
+import 'package:InPrep/models/group_offer.dart';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/models/review.dart';
+import 'package:InPrep/utils/loader.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:InPrep/models/Skill.dart';
@@ -15,6 +20,7 @@ import 'package:InPrep/models/portfolio.dart';
 import 'package:InPrep/models/session.dart';
 import 'package:InPrep/models/social.dart';
 import 'package:InPrep/models/user.dart';
+import 'package:flutter/material.dart';
 
 import 'offer.dart';
 
@@ -47,6 +53,34 @@ class DatabaseService {
       FirebaseFirestore.instance.collection('review');
   static final CollectionReference blogCollection =
       FirebaseFirestore.instance.collection('blog');
+  final CollectionReference groupsCollection =
+      FirebaseFirestore.instance.collection('groups');
+
+  CollectionReference createGroupMessagesReference(id) {
+    return FirebaseFirestore.instance
+        .collection('groups')
+        .doc(id)
+        .collection("messages");
+  }
+
+  Future<Group> createGroup({Group group, MyUser sender, context}) async {
+    try {
+      var gID = await groupsCollection.add(group.toJson());
+      await groupsCollection.doc(gID.id).update({"gid": gID.id});
+      DocumentSnapshot gDoc = await groupsCollection.doc(gID.id).get();
+      group = Group.fromJson(gDoc.data());
+      print("GROUP SECTION COMPLETED ${group.gid}");
+      await sendGroupMessage(
+          msg: group.lastMessage,
+          context: context,
+          group: group,
+          sender: sender);
+      return group;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 
   Future<bool> createBlog({Blog blog}) async {
     try {
@@ -143,51 +177,16 @@ class DatabaseService {
   }
 
   setSeeker({uid, seeker}) async {
-    //print('CHANGING SEEKER');
-    //print('BEFORE SEEKER $seeker');
     await userCollection.doc(uid).update({
       'seeker': seeker,
     });
-    // var user =await userCollection.doc(uid).get();
-  }
-
-  Future<bool> getConfirmMessage({cid}) async {
-    try {
-      DocumentSnapshot chat = await chatsCollection.doc(cid).get();
-      return chat.data()['confirm'];
-    } catch (e) {
-      //print(e);
-      return false;
-    }
   }
 
   getAppointment({cid}) async {
     try {
-      var chat = await chatsCollection.doc(cid).get();
-      ////print(chat.data()['confirm']);
-      return chat.data()['confirm'];
-    } catch (e) {
-      //print(e);
-      return null;
-    }
-  }
-
-  getDateForAppointment({cid}) async {
-    try {
-      var chat = await chatsCollection.doc(cid).get();
-      ////print(chat.data()['confirm']);
-      return chat.data()['appointDate'];
-    } catch (e) {
-      //print(e);
-      return null;
-    }
-  }
-
-  getTimeForAppointment({cid}) async {
-    try {
-      var chat = await chatsCollection.doc(cid).get();
-      ////print(chat.data()['confirm']);
-      return chat.data()['appointTime'];
+      var c = await chatsCollection.doc(cid).get();
+      Chat chat = Chat.fromJson(c.data());
+      return chat.confirm;
     } catch (e) {
       //print(e);
       return null;
@@ -199,17 +198,195 @@ class DatabaseService {
       //print(uid);
       QuerySnapshot user =
           await socialCollection.where('uid', isEqualTo: uid).get();
-
-      // //print('${user.data()['displayName']} ISaaaa THE EMP');
       if (user.docs.length > 0) {
-        //print('${user.docs.first.data()['skype']} IS THE EMP SKYPE');
-        return user.docs.first.data()['skype'];
+        MyUser u = MyUser.fromJson(user.docs.first.data());
+        return u.skype;
       }
       return null;
     } catch (e) {
-      //print(e);
-      //print('NO SKYPEaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
       return null;
+    }
+  }
+
+  sendGroupMessage({msg, sender, Group group, context, type, url}) async {
+    try {
+      Map<String, bool> usersSeen = {};
+      for (var usr in group.users) {
+        if (usr.uid != sender.uid) {
+          usersSeen[usr.uid] = false;
+        }
+      }
+      group.usersRead = usersSeen;
+      print("USER REMOVED");
+      GroupMessage groupMessage = GroupMessage(
+          gmid: "",
+          sender: sender,
+          receivers: group.users,
+          timestamp: Timestamp.now(),
+          time: TimeOfDay.now().format(context),
+          type: type,
+          url: url,
+          offer: GroupOffer(),
+          message: msg);
+      print("GROUP MESSAGE OBJ MADE");
+      DocumentReference message = await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .add(groupMessage.toJson());
+      print("GROUP MESSAGE REFERENCE MADE ${message.id}");
+      groupMessage.gmid = message.id;
+      print("GROUP MESSAGE REFERENCE PREPARED");
+      group.lastMessage = msg;
+      group.timestamp = Timestamp.now();
+      await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .doc(message.id)
+          .update(groupMessage.toJson());
+      await groupsCollection.doc(group.gid).update(group.toJson());
+      for (MyUser usr in group.users) {
+        //TODO:CHANGE TO COMPLETE NOTIFICATION
+        if (sender.uid != usr.uid) {
+          if (type == 4)
+            sendNotification(
+                user: usr,
+                message: '${sender.displayName} left ${group.title}');
+          else if (type == 1)
+            sendNotification(
+                user: usr,
+                message:
+                    '${sender.displayName} send an image in ${group.title}');
+          else if (type == 5)
+            sendNotification(
+                user: usr,
+                message:
+                    '${sender.displayName} send a document in ${group.title}');
+          else
+            sendNotification(
+                user: usr,
+                message: '${sender.displayName} said: $msg in ${group.title}');
+        }
+      }
+    } catch (e) {
+      print("GROUP MESSAGE ERROR: $e");
+    }
+  }
+
+  sendGroupOfferMessage(
+      {msg,
+      MyUser sender,
+      Group group,
+      context,
+      type,
+      GroupOffer groupOffer}) async {
+    Map<String, bool> usersSeen = {};
+    for (var usr in group.users) {
+      if (usr.uid != sender.uid) {
+        usersSeen[usr.uid] = false;
+      }
+    }
+
+    group.usersRead = usersSeen;
+    try {
+      Map<String, bool> usersAccepted = {}, usersSeen = {};
+      for (var usr in group.users) {
+        if (usr.uid != sender.uid) {
+          usersAccepted[usr.uid] = false;
+          usersSeen[usr.uid] = false;
+        }
+      }
+      GroupMessage groupMessage = GroupMessage(
+          gmid: "",
+          sender: sender,
+          receivers: group.users,
+          timestamp: Timestamp.now(),
+          time: TimeOfDay.now().format(context),
+          type: type,
+          url: "",
+          offer: groupOffer,
+          link: GroupLink(),
+          message: msg);
+      print("GROUP MESSAGE OBJ MADE");
+      DocumentReference message = await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .add(groupMessage.toJson());
+      print("GROUP MESSAGE REFERENCE MADE ${message.id}");
+      groupMessage.gmid = message.id;
+      groupMessage.offer.gmid = message.id;
+      print("GROUP MESSAGE REFERENCE PREPARED");
+      group.lastMessage = msg;
+      group.timestamp = Timestamp.now();
+      await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .doc(message.id)
+          .update(groupMessage.toJson());
+      await groupsCollection.doc(group.gid).update(group.toJson());
+      //TODO:CHANGE TO COMPLETE NOTIFICATION
+      for (MyUser usr in group.users) {
+        if (sender.uid != usr.uid)
+          sendNotification(
+              user: usr,
+              message:
+                  '${sender.displayName} has sent an offer in ${group.title}');
+      }
+    } catch (e) {
+      print("GROUP MESSAGE ERROR: $e");
+    }
+  }
+
+  sendGroupLinkMessage(
+      {msg, sender, Group group, context, type, GroupLink groupLink}) async {
+    Map<String, bool> usersSeen = {};
+    for (var usr in group.users) {
+      if (usr.uid != sender.uid) {
+        usersSeen[usr.uid] = false;
+      }
+    }
+
+    group.usersRead = usersSeen;
+    try {
+      // group.users.remove(sender);
+      print("USER REMOVED");
+      GroupMessage groupMessage = GroupMessage(
+          gmid: "",
+          sender: sender,
+          receivers: group.users,
+          timestamp: Timestamp.now(),
+          time: TimeOfDay.now().format(context),
+          type: type,
+          url: "",
+          offer: GroupOffer(),
+          link: groupLink,
+          message: msg);
+      print("GROUP MESSAGE OBJ MADE");
+      DocumentReference message = await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .add(groupMessage.toJson());
+      print("GROUP MESSAGE REFERENCE MADE ${message.id}");
+      groupMessage.gmid = message.id;
+      groupMessage.offer.gmid = message.id;
+      print("GROUP MESSAGE REFERENCE PREPARED");
+      group.lastMessage = msg;
+      group.timestamp = Timestamp.now();
+      await groupsCollection
+          .doc(group.gid)
+          .collection("messages")
+          .doc(message.id)
+          .update(groupMessage.toJson());
+      await groupsCollection.doc(group.gid).update(group.toJson());
+      //TODO:CHANGE TO COMPLETE NOTIFICATION
+      for (MyUser usr in group.users) {
+        if (sender.uid != usr.uid)
+          sendNotification(
+              user: usr,
+              message:
+                  '${sender.displayName} has sent meeting link in ${group.title}');
+      }
+    } catch (e) {
+      print("GROUP MESSAGE ERROR: $e");
     }
   }
 
@@ -279,9 +456,12 @@ class DatabaseService {
         });
         await userCollection.doc(rid).update({"read": false});
       } else if (chat.users[1] == sid) {
-        await chatsCollection
-            .doc(cid)
-            .update({'lastMessage': msg, 'sRead': false, 'sDeleted': false});
+        await chatsCollection.doc(cid).update({
+          'timestamp': Timestamp.now(),
+          'lastMessage': msg,
+          'sRead': false,
+          'sDeleted': false
+        });
         await userCollection.doc(rid).update({"read": false});
       }
     } catch (e) {
@@ -526,6 +706,38 @@ class DatabaseService {
     }
   }
 
+  Future<List<MyUser>> getSimpleSearchUser({search, currUser}) async {
+    try {
+      //print('@SEEARCH $search $title $title2');
+      List<MyUser> searchedUsers = [];
+      var users = await userCollection.get();
+      for (var doc in users.docs) {
+        MyUser user = MyUser.fromJson(doc.data());
+        await userNullCheck(user: user);
+        if ((user.displayName
+                    .toString()
+                    .toLowerCase()
+                    .contains(search.toLowerCase()) ||
+                user.email
+                    .toString()
+                    .toLowerCase()
+                    .contains(search.toLowerCase())) &&
+            user.uid != currUser &&
+            !user.seeker) {
+          searchedUsers.add(user);
+        }
+      }
+      //print('COMPARING');
+      Comparator<MyUser> usersComp = (a, b) =>
+          a.displayName.toLowerCase().compareTo(b.displayName.toLowerCase());
+      searchedUsers.sort(usersComp);
+      return searchedUsers;
+    } catch (e) {
+      //print(e);
+      return null;
+    }
+  }
+
   Future<List<MyUser>> getAdvancedSearchUser(
       {category, subCategory, country, city, state}) async {
     try {
@@ -662,14 +874,14 @@ class DatabaseService {
 
   Future<bool> getUserSeeker(uid) async {
     DocumentSnapshot snapshot = await userCollection.doc(uid).get();
-
-    //print(snapshot.data()['seeker']);
-    return snapshot.data()['seeker'];
+    MyUser u = MyUser.fromJson(snapshot.data());
+    return u.seeker;
   }
 
   Future<bool> userAvail(uid) async {
     DocumentSnapshot snapshot = await userCollection.doc(uid).get();
-    return snapshot.data != null;
+    print(snapshot.data());
+    return snapshot.data() != null;
   }
 
 //  USER
@@ -803,75 +1015,18 @@ class DatabaseService {
 //  USER
 //  PROFILE
 //  INFORMATION
-  Future<bool> setCurrentUserProfile(
-      {uid,
-      priceTo,
-      priceFrom,
-      category,
-      subCat,
-      displayName,
-      design,
-      city,
-      country,
-      photoUrl,
-      desc,
-      state,
-      seeker,
-      other,
-      email}) async {
+  Future<bool> setCurrentUserProfile({MyUser user}) async {
     try {
-      //print(category);
-      if (seeker)
-        await userCollection.doc(uid).update({
-          'displayName': displayName,
-          'design': design,
-          'desc': desc,
-          'city': city,
-          'country': country,
-          'photoUrl': photoUrl,
-          'profile': true,
-          'category': category,
-          'state': state,
-          'subCategory': subCat,
-          other: other
-        });
-      else
-        await userCollection.doc(uid).update({
-          'displayName': displayName,
-          'design': design,
-          'desc': desc,
-          'city': city,
-          'country': country,
-          'photoUrl': photoUrl,
-          'profile': true,
-          'category': category,
-          'state': state,
-          'priceTo': priceTo,
-          'priceFrom': priceFrom,
-          'subCategory': subCat
-//        'uid': uid,
-//        'email': email,
-//        'seeker': seeker
-        });
+      await userCollection.doc(user.uid).update(user.toJson());
       return true;
     } catch (e) {
-      //print('$e ERROR DURING SETTING DATA');
+      print('$e ERROR DURING SETTING DATA');
       return false;
     }
   }
 
-  Future<MyUser> getcurrentUserData(uid, {seeker, loggedin}) async {
+  Future<MyUser> getcurrentUserData(uid) async {
     try {
-      //print("getcurrentUserData USER : $uid");
-      // if (loggedin) {
-      //   User fUser = await FirebaseAuth.instance.currentUser();
-      //   if (fUser.isEmailVerified) {
-      //     await userCollection.doc(uid).update({
-      //       'verified': true,
-      //     });
-      //   }
-      // }
-      //print("getcurrentUserData AFTER LOGIN USER : $uid");
       var user =
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
       var userData = MyUser.fromJson(user.data());
@@ -914,22 +1069,12 @@ class DatabaseService {
 //
 //          CREATE AND REMOVE PORTFOLIO
 //
-  Future<Portfolio> createPortfolio(
-      {uid, title, from, to, current, image}) async {
+  Future<Portfolio> createPortfolio({Portfolio portfolio}) async {
     try {
-      var portDoc = await portfolioCollection.add({
-        'uid': uid,
-        'title': title,
-        'from': from,
-        'to': to,
-        'current': current,
-        'image': image
-      });
-      String pid = portDoc.id;
-      await portfolioCollection.doc(portDoc.id).update({'pid': pid});
-      var portData = await portfolioCollection.doc(portDoc.id).get();
-      Portfolio port = Portfolio.fromJson(portData.data());
-      return port;
+      var portDoc = await portfolioCollection.add(portfolio.toJson());
+      portfolio.pid = portDoc.id;
+      await portfolioCollection.doc(portDoc.id).update(portfolio.toJson());
+      return portfolio;
     } catch (e) {
       //print(e);
       return null;
@@ -958,20 +1103,18 @@ class DatabaseService {
           await socialCollection.where('uid', isEqualTo: uid).get();
       // //print(socialDoc.docs.first.data);
       if (socialDoc.docs.length > 0) {
-        //print('INSIDE IF');
-        await socialCollection.doc(socialDoc.docs.first.data()['sid']).update({
+        Social s = Social.fromJson(socialDoc.docs.first.data());
+        await socialCollection.doc(s.sid).update({
           'uid': uid,
-          'fb': fb ?? socialDoc.docs.first.data()['fb'],
-          'git': git ?? socialDoc.docs.first.data()['git'],
-          'linkedin': linkedin ?? socialDoc.docs.first.data()['linkedin'],
-          'tiktok': tiktok ?? socialDoc.docs.first.data()['tiktok'],
-          'insta': insta ?? socialDoc.docs.first.data()['insta'],
-          'skype': skype ?? socialDoc.docs.first.data()['skype']
+          'fb': fb ?? s.fb,
+          'git': git ?? s.git,
+          'linkedin': linkedin ?? s.linkedin,
+          'tiktok': tiktok ?? s.tiktok,
+          'insta': insta ?? s.insta,
+          'skype': skype ?? s.skype,
         });
-        sid = socialDoc.docs.first.data()['sid'];
-        //print('INSIDE IF END');
+        sid = s.sid;
       } else {
-        //print('INSIDE ELSE');
         var doc = await socialCollection.add({
           'uid': uid,
           'fb': fb,
@@ -987,19 +1130,19 @@ class DatabaseService {
       }
 
       var socialData = await socialCollection.doc(sid).get();
+      Social social = Social.fromJson(socialData.data());
       Social s = Social(
         sid: sid,
-        uid: socialData.data()['uid'],
-        fb: socialData.data()['fb'],
-        git: socialData.data()['git'],
-        tiktok: socialData.data()['tiktok'],
-        insta: socialData.data()['insta'],
-        linkedin: socialData.data()['linkedin'],
-        skype: socialData.data()['skype'],
+        uid: social.uid,
+        fb: social.fb,
+        git: social.git,
+        tiktok: social.tiktok,
+        insta: social.insta,
+        linkedin: social.linkedin,
+        skype: social.skype,
       );
       return s;
     } catch (e) {
-      //print(e);
       return null;
     }
   }
@@ -1009,7 +1152,6 @@ class DatabaseService {
       await socialCollection.doc(sid).delete();
       return true;
     } catch (e) {
-      //print(e);
       return false;
     }
   }
@@ -1018,33 +1160,13 @@ class DatabaseService {
 //
 //          CREATE AND REMOVE EXPERIENCE
 //
-  Future<Experience> createExperience(
-      {uid, to, from, title, designation}) async {
+  Future<Experience> createExperience({Experience experience}) async {
     try {
-      //print('$uid IS THE ID');
-      var expDoc = await experienceCollection.add({
-        'uid': uid,
-        'to': to,
-        'from': from,
-        'title': title,
-        'designation': designation
-      });
-      String eid = expDoc.id;
-      ////print('$eid is EXPERIENCE ID');
-      await experienceCollection.doc(expDoc.id).update({'eid': eid});
-      var expDocData = await experienceCollection.doc(expDoc.id).get();
-      Experience exp = Experience(
-        eid: eid,
-        uid: expDocData.data()['uid'],
-        from: expDocData.data()['from'],
-        title: expDocData.data()['title'],
-        designation: expDocData.data()['designation'],
-        to: expDocData.data()['to'],
-      );
-      ////print('${exp.eid} is EXPERIENCE ID IN OBJECT');
-      return exp;
+      var expDoc = await experienceCollection.add(experience.toJson());
+      experience.eid = expDoc.id;
+      await experienceCollection.doc(expDoc.id).update(experience.toJson());
+      return experience;
     } catch (e) {
-      //print(e);
       return null;
     }
   }
@@ -1063,25 +1185,12 @@ class DatabaseService {
 //
 //          CREATE AND REMOVE EDUCATION
 //
-  Future<Education> createEducation(
-      {uid, to, from, country, degree, institute, current}) async {
+  Future<Education> createEducation({Education education}) async {
     try {
-      //print('$uid IS THE ID');
-      var eduDoc = await educationCollection.add({
-        'uid': uid,
-        'to': to,
-        'from': from,
-        'country': country,
-        'degree': degree,
-        'institute': institute,
-        'current': current
-      });
-      String eid = eduDoc.id;
-      await educationCollection.doc(eduDoc.id).update({'eid': eid});
-      var eduDocData = await educationCollection.doc(eduDoc.id).get();
-      Education edu = Education.fromJson(eduDocData.data());
-
-      return edu;
+      var eduDoc = await educationCollection.add(education.toJson());
+      education.eid = eduDoc.id;
+      await educationCollection.doc(eduDoc.id).update(education.toJson());
+      return education;
     } catch (e) {
       //print(e);
       return null;
@@ -1103,26 +1212,13 @@ class DatabaseService {
 //
 //          CREATE AND REMOVE SKILL
 //
-  Future<Skill> createSkill({uid, name, rank}) async {
+  Future<Skill> createSkill({Skill skill}) async {
     try {
-      var skillDoc = await skillCollection.add({
-        'uid': uid,
-        'name': name,
-        'rank': rank,
-      });
-      //print('${skillDoc.id} IS THE ID IN DOC ABOVE');
-      String sid = skillDoc.id;
-      await skillCollection.doc(skillDoc.id).update({'sid': sid});
-      var skillDocData = await skillCollection.doc(skillDoc.id).get();
-      //print('${skillDocData.data} IS THE ID IN DOC BELOW');
-      Skill s = Skill(
-        sid: sid,
-        uid: skillDocData.data()['uid'],
-        name: skillDocData.data()['name'],
-        rank: skillDocData.data()['rank'],
-      );
-      //print('${s.sid} is the ID of skill');
-      return s;
+      var skillDoc = await skillCollection.add(skill.toJson());
+      skill.sid = skillDoc.id;
+      await skillCollection.doc(skillDoc.id).update(skill.toJson());
+
+      return skill;
     } catch (e) {
       //print(e);
       return null;
@@ -1202,7 +1298,6 @@ class DatabaseService {
       // _saveDeviceToken(sid);
       return cid;
     } catch (e) {
-      //print(e);
       return null;
     }
   }

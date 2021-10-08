@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MessageBubble extends StatelessWidget {
   MessageBubble(
@@ -66,28 +67,16 @@ class MessageBubble extends StatelessWidget {
               ),
             ),
           ),
-          if (type == 3)
+          if (type == 3 || type == 5)
             InkWell(
               onTap: () async {
                 try {
                   final status = await Permission.storage.request();
                   if (status.isGranted) {
                     showLoader(context);
-
-                    // FlutterDownloader.registerCallback(callback);
+                    print("Granted");
                     final dir = await getApplicationDocumentsDirectory();
-                    //
-                    // var testDir = Platform.isIOS
-                    //     ? await getExternalStorageDirectory()
-                    //     : await getExternalStorageDirectory();
-                    // : await Io.Directory('/storage/emulated/0/inPrep')
-                    //     .create(recursive: true);
-                    // final Reference ref = FirebaseStorage.instance
-                    //     .ref()
-                    //     .child('files')
-                    //     .child(widget.text);
-                    // String name = "${testDir.path}/inPrep_${text}";
-
+                    print("Dir $dir");
                     final taskId = await FlutterDownloader.enqueue(
                       url: url,
                       fileName: "inPrep_${text}",
@@ -100,11 +89,6 @@ class MessageBubble extends StatelessWidget {
                           true, // click on notification to open downloaded file (for Android)
                     );
 
-                    // final file = Io.File(name);
-                    //
-                    // await ref.writeToFile(file);
-                    // showToast(context, "Downloaded inPrep-${testDir.path}");
-                    // showToast(context, "Downloaded");
                     if (Platform.isIOS)
                       showToast(
                           context, "Downloading at ${dir.path}/inPrep_$text");
@@ -124,6 +108,30 @@ class MessageBubble extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.0),
                 child: Text(
                   "Tap to download",
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 14.0,
+                  ),
+                ),
+              ),
+            ),
+          if (type == 4)
+            InkWell(
+              onTap: () async {
+                try {
+                  if (await canLaunch(url)) {
+                    launch(url);
+                  }
+                } catch (e) {
+                  showToast(context, "Could not open link");
+                  Navigator.pop(context);
+                  print(e);
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 2.0),
+                child: Text(
+                  "Open Link",
                   style: TextStyle(
                     color: Colors.blueAccent,
                     fontSize: 14.0,

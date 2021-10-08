@@ -11,7 +11,7 @@ class Message {
   String time;
   String sid;
   String rid;
-  int type; //0 text 1 pic 2 offer
+  int type; //0 text 1 pic 2 offer 3 file
   Timestamp timestamp;
   String imgURL;
   Offer offer;

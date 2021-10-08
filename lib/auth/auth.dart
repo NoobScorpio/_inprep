@@ -116,7 +116,6 @@ class AuthService {
     }
   }
 
-  //TODO
   Future<MyUser> signInWIthAppleCreds() async {
     try {
       // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -163,7 +162,7 @@ class AuthService {
       //print('FOUND THE APPLE USER $find');
       //print('USER UID IS ${user.uid}');
 
-      if (!find) {
+      if (find == null || find == false) {
         if (category == 'Select' && !seeker)
           return 'Category';
         else if (subCat == 'Select' && !seeker)
@@ -213,8 +212,6 @@ class AuthService {
           await googleSignInAccount.authentication;
       var idToken = googleSignInAuthentication.idToken;
       var accessToken = googleSignInAuthentication.accessToken;
-      // debug//Print(" THIS IS $idToken ");
-      // debug//Print(" THIS IS $accessToken");
       final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken);
@@ -222,7 +219,8 @@ class AuthService {
       final authResults = await _auth.signInWithCredential(credential);
       final user = authResults.user;
       bool find = await DatabaseService().userAvail(user.uid);
-      if (!find) {
+      if (find == null || find == false) {
+        print("FIND");
         if (category == 'Select' && !seeker)
           return 'Category';
         else if (subCat == 'Select' && !seeker)
@@ -250,13 +248,12 @@ class AuthService {
         }
       } else {
         // //print('SAVING GOOGLE CREDS');
+        print("NOT FIND");
         saveGoogleCreds(idToken: idToken, accessToken: accessToken);
         return userFromFirebaseUser(authResults.user);
       }
     } catch (e) {
-      ////print('null');
-      // if(e.toString().contains('ERROR_EMAIL_ALREADY_IN_USE'))
-      //print("GOOGLE AUTH ERROR ${e.toString()}");
+      print("ERROR IN Google SIGNIN METHOD $e");
       return null;
     }
 //    FirebaseUser user=await _auth.signinwithg

@@ -10,12 +10,14 @@ class Payment {
   String sid;
   String rid;
   String cid;
+  String gid;
   Timestamp timestamp;
   bool withdraw;
 
   Payment(
       {this.sessid,
       this.pid,
+      this.gid,
       this.price,
       this.timestamp,
       this.date,
@@ -28,6 +30,7 @@ class Payment {
 
   Payment.fromJson(Map<String, dynamic> json) {
     pid = json['pid'];
+    gid = json['gid'];
     price = json['price'];
     date = json['date'];
     time = json['time'];
@@ -43,6 +46,7 @@ class Payment {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['pid'] = this.pid;
+    data['gid'] = this.gid;
     data['price'] = this.price;
     data['date'] = this.date;
     data['time'] = this.time;

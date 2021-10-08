@@ -1,9 +1,127 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:images_picker/images_picker.dart';
+
+void push(context, obj) {
+  Navigator.push(context, MaterialPageRoute(builder: (_) => obj));
+}
+
+Future<String> pickImage(camera) async {
+  try {
+    File selected;
+    if (!camera) {
+      List<Media> media = await ImagesPicker.pick(
+        count: 1,
+        pickType: PickType.image,
+        cropOpt: CropOption(
+          aspectRatio: CropAspectRatio.custom,
+          cropType: CropType.rect, // currently for android
+        ),
+      );
+      selected = File(media[0].path);
+    } else {
+      List<Media> media = await ImagesPicker.openCamera(
+        pickType: PickType.image,
+        cropOpt: CropOption(
+          aspectRatio: CropAspectRatio.custom,
+          cropType: CropType.rect, // currently for android
+        ),
+      );
+      selected = File(media[0].path);
+    }
+
+    // _storage.bucket = 'gs://inprep-c8711.appspot.com';
+    FirebaseStorage _storage;
+
+    UploadTask _uploadTask;
+    _storage =
+        FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    // setState(() {
+    _uploadTask =
+        _storage.ref().child('images').child(fileName).putFile(selected);
+    if (_uploadTask == null)
+      return "";
+    else {
+      final snap = await _uploadTask.whenComplete(() => {});
+      return await snap.ref.getDownloadURL();
+    }
+  } catch (e) {
+    print("UPLOAD ERROR $e");
+    return "";
+  }
+}
+
+Future<String> pickFile() async {
+  try {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+    );
+    if (result == null) {
+      return "";
+    } else {
+      File selected = File(result.files.single.path);
+      // _storage.bucket = 'gs://inprep-c8711.appspot.com';
+      FirebaseStorage _storage;
+
+      UploadTask _uploadTask;
+      _storage =
+          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString() +
+          ".${selected.path.split('.').last}";
+      // setState(() {
+      _uploadTask =
+          _storage.ref().child('files').child(fileName).putFile(selected);
+      if (_uploadTask == null)
+        return "";
+      else {
+        final snap = await _uploadTask.whenComplete(() => {});
+        return await snap.ref.getDownloadURL() + "\$" + fileName;
+      }
+    }
+  } catch (e) {
+    print("UPLOAD ERROR $e");
+    return "";
+  }
+}
+
+void pop(context) {
+  Navigator.pop(context);
+}
 
 const categoryString =
     'Select a category and a sub category for your profile if you are already not signed in from google or apple before. This way seekers can easily '
     'find you based on your category and sub category.';
 
+Widget background(context) {
+  return Opacity(
+    opacity: 0.09,
+    child: Image.asset(
+      "assets/images/bg.jpg",
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      fit: BoxFit.fill,
+    ),
+  );
+}
+
+List<String> months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
 const List<String> catList = [
   "Select",
   'Business',

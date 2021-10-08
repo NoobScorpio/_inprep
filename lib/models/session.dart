@@ -10,7 +10,7 @@ class Session {
   var users;
   String seekId;
   String consId;
-
+  String gid;
   String cid;
   String rating;
   bool completed;
@@ -24,6 +24,7 @@ class Session {
       this.time,
       this.users,
       this.cid,
+      this.gid,
       this.rating,
       this.timestamp,
       this.seekId,
@@ -32,6 +33,7 @@ class Session {
 
   Session.fromJson(Map<String, dynamic> json) {
     sessid = json['sessid'];
+    gid = json['gid'];
     date = json['date'];
     time = json['time'];
     users = json['users'];
@@ -49,6 +51,7 @@ class Session {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['seekId'] = this.seekId;
+    data['gid'] = this.gid;
     data['consId'] = this.consId;
     data['sessid'] = this.sessid;
     data['date'] = this.date;

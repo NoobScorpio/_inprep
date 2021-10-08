@@ -4,6 +4,7 @@ import 'meeting.dart';
 
 class Offer {
   String meid;
+  String link;
   String cid;
   String oid;
   double cost;
@@ -19,6 +20,7 @@ class Offer {
       this.declined,
       this.cid,
       this.oid,
+      this.link,
       this.accepted,
       this.cost,
       this.meetCount,
@@ -31,8 +33,9 @@ class Offer {
     accepted = json['accepted'];
     declined = json['declined'];
     cost = json['cost'];
-    cid = json['cid'];
     oid = json['oid'];
+    cid = json['cid'];
+    link = json['link'];
     meetCount = json['meetCount'];
     cancel = json['cancel'];
     timestamp = json['Timestamp'];
@@ -51,6 +54,7 @@ class Offer {
         ''] = this.accepted;
     data['cid'] = this.cid;
     data['oid'] = this.oid;
+    data['link'] = this.link;
     data['cost'] = this.cost;
     data['meetCount'] = this.meetCount;
     data['cancel'] = this.cancel;

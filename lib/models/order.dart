@@ -6,6 +6,7 @@ class Order {
   String sessid;
   String sid;
   String uid;
+  String gid;
   String price;
   bool withdraw;
   String date;
@@ -15,6 +16,7 @@ class Order {
   Order(
       {this.oid,
       this.pid,
+      this.gid,
       this.timestamp,
       this.sid,
       this.sessid,
@@ -37,11 +39,13 @@ class Order {
     timestamp = json['timestamp'];
     pending = json['pending'];
     sessid = json['sessid'];
+    gid = json['gid'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['oid'] = this.oid;
+    data['gid'] = this.gid;
     data['pid'] = this.pid;
     data['uid'] = this.uid;
     data['price'] = this.price;

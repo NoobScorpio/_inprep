@@ -12,7 +12,5 @@ Future<bool> loginUserState(context, user) async {
   usr = await db.getCurrentUserProfile(usr.uid,
       seeker: usr.seeker, loggedin: true);
   bool userBool = await BlocProvider.of<UserCubit>(context).loginUser(usr);
-  // print("@USER BLOC USER SUCCESS");
-  // print("@USER BLOC ${usr.skills}");
   return userBool;
 }

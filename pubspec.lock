@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
-  animated_text_kit:
-    dependency: "direct main"
-    description:
-      name: animated_text_kit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.2.1"
   archive:
     dependency: transitive
     description:
@@ -105,21 +98,21 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7"
+    version: "2.5.3"
   cloud_firestore_platform_interface:
     dependency: transitive
     description:
       name: cloud_firestore_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.3"
+    version: "5.4.1"
   cloud_firestore_web:
     dependency: transitive
     description:
       name: cloud_firestore_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7"
+    version: "2.4.2"
   collection:
     dependency: transitive
     description:
@@ -245,28 +238,28 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "3.1.1"
   firebase_auth_platform_interface:
     dependency: transitive
     description:
       name: firebase_auth_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.1"
+    version: "6.1.0"
   firebase_auth_web:
     dependency: transitive
     description:
       name: firebase_auth_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.1"
+    version: "3.1.0"
   firebase_core:
     dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.6.0"
   firebase_core_platform_interface:
     dependency: transitive
     description:
@@ -281,6 +274,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  firebase_dynamic_links:
+    dependency: "direct main"
+    description:
+      name: firebase_dynamic_links
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.9"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -308,21 +308,21 @@ packages:
       name: firebase_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.0.1"
+    version: "10.0.3"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.2"
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -363,6 +363,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.1"
+  flutter_intro:
+    dependency: "direct main"
+    description:
+      name: flutter_intro
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.3.1"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -391,6 +398,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
+  flutter_share:
+    dependency: "direct main"
+    description:
+      name: flutter_share
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   flutter_svg:
     dependency: transitive
     description:
@@ -534,6 +548,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
+  image_downloader:
+    dependency: "direct main"
+    description:
+      name: image_downloader
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.30.0"
   images_picker:
     dependency: "direct main"
     description:
@@ -541,6 +562,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.4"
+  instant:
+    dependency: "direct main"
+    description:
+      name: instant
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   intl:
     dependency: transitive
     description:
@@ -555,6 +583,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  jiffy:
+    dependency: "direct main"
+    description:
+      name: jiffy
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   js:
     dependency: transitive
     description:
@@ -618,13 +653,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+1"
-  overlay_support:
-    dependency: "direct main"
-    description:
-      name: overlay_support
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.1"
   passcode_screen:
     dependency: "direct main"
     description:
@@ -765,6 +793,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.1"
+  salomon_bottom_bar:
+    dependency: "direct main"
+    description:
+      name: salomon_bottom_bar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -916,7 +951,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.9"
+    version: "6.0.10"
   url_launcher_linux:
     dependency: transitive
     description:
