@@ -7,7 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:image_downloader/image_downloader.dart';
+// import 'package:image_downloader/image_downloader.dart';
 
 class ImageMessage extends StatelessWidget {
   ImageMessage({this.sender, this.isMe, this.time, this.url, this.dark});
@@ -103,72 +103,73 @@ class ImageMessage extends StatelessWidget {
                           child: InkWell(
                             onTap: () async {
                               try {
-                                final status =
-                                    await Permission.storage.request();
-                                if (status.isGranted) {
-                                  // showLoader(context);
-                                  showToast(context, "Downloading Image");
-                                  String name = "inPrep_" +
-                                      "$sender" +
-                                      "_${time.split(" ")[0]}.jpg";
-                                  var imageId =
-                                      await ImageDownloader.downloadImage(
-                                    url,
-                                  );
-                                  showToast(context, "Image downloaded");
-                                  // Navigator.pop(context);
-                                  // var dir;
-                                  // if (Platform.isIOS)
-                                  //   dir =
-                                  //       await getApplicationDocumentsDirectory();
-                                  //
-                                  // String name = "inPrep_" +
-                                  //     "$sender" +
-                                  //     "_${time.split(" ")[0]}.jpg";
-                                  // var response =
-                                  //     await get(Uri.parse(url)); // <--2
-                                  //
-                                  // var firstPath =
-                                  //     "/storage/emulated/0/Download/InPrep";
-                                  // var filePathAndName = firstPath + '/$name';
-                                  // await Directory(
-                                  //         Platform.isIOS ? dir.path : firstPath)
-                                  //     .create(recursive: true); // <-- 1
-                                  // File file2 = new File(Platform.isIOS
-                                  //     ? "${dir.path}/$name"
-                                  //     : filePathAndName); // <-- 2
-                                  // file2.writeAsBytesSync(response.bodyBytes);
-                                  //
-                                  // if (Platform.isIOS) {
-                                  //   showToast(context,
-                                  //       "Downloading at ${dir.path}/$name");
-                                  //   print("Downloading at ${dir.path}/$name");
-                                  // } else
-                                  //   showToast(context,
-                                  //       "Downloading at /storage/emulated/0/Download/$name");
-                                  // // print("Downloading at ${testDir.path}");
+                                // final status =
+                                //     await Permission.storage.request();
+                                // if (status.isGranted) {
+                                //   // showLoader(context);
+                                //   showToast(context, "Downloading Image");
+                                //   String name = "inPrep_" +
+                                //       "$sender" +
+                                //       "_${time.split(" ")[0]}.jpg";
+                                //   var imageId =
+                                //       await ImageDownloader.downloadImage(
+                                //     url,
+                                //   );
+                                //   showToast(context, "Image downloaded");
+                                //   // Navigator.pop(context);
+                                //   // var dir;
+                                //   // if (Platform.isIOS)
+                                //   //   dir =
+                                //   //       await getApplicationDocumentsDirectory();
+                                //   //
+                                //   // String name = "inPrep_" +
+                                //   //     "$sender" +
+                                //   //     "_${time.split(" ")[0]}.jpg";
+                                //   // var response =
+                                //   //     await get(Uri.parse(url)); // <--2
+                                //   //
+                                //   // var firstPath =
+                                //   //     "/storage/emulated/0/Download/InPrep";
+                                //   // var filePathAndName = firstPath + '/$name';
+                                //   // await Directory(
+                                //   //         Platform.isIOS ? dir.path : firstPath)
+                                //   //     .create(recursive: true); // <-- 1
+                                //   // File file2 = new File(Platform.isIOS
+                                //   //     ? "${dir.path}/$name"
+                                //   //     : filePathAndName); // <-- 2
+                                //   // file2.writeAsBytesSync(response.bodyBytes);
+                                //   //
+                                //   // if (Platform.isIOS) {
+                                //   //   showToast(context,
+                                //   //       "Downloading at ${dir.path}/$name");
+                                //   //   print("Downloading at ${dir.path}/$name");
+                                //   // } else
+                                //   //   showToast(context,
+                                //   //       "Downloading at /storage/emulated/0/Download/$name");
+                                //   // // print("Downloading at ${testDir.path}");
 
-                                } else {
-                                  showToast(
-                                      context, "Storage permission denied");
-                                }
+                                // } else {
+                                //   showToast(
+                                //       context, "Storage permission denied");
+                                // }
                               } catch (e) {
                                 showToast(context, "Could not download file");
                                 Navigator.pop(context);
                                 print("DOWNLOAD ERROR $e");
                               }
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Icon(
-                                  Icons.download_rounded,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                            // child: Padding(
+                            //   padding: const EdgeInsets.all(8.0),
+                            //   child: CircleAvatar(
+                            //     radius: 15,
+                            //     backgroundColor: Theme.of(context).primaryColor,
+                            //     child: Icon(
+                            //       Icons.download_rounded,
+                            //       color: Colors.white,
+                            //     ),
+                            //   ),
+                            // ),
+                            child: Container(),
                           ),
                         ),
                       ),
