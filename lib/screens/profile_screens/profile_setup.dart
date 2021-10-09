@@ -1324,22 +1324,25 @@ class _ProfileSetupState extends State<ProfileSetup> {
           cropType: CropType.rect, // currently for android
         ),
       );
-      selected = File(media[0].path);
-      FirebaseStorage _storage;
+      if (media != null) {
+        selected = File(media[0].path);
+        FirebaseStorage _storage;
 
-      UploadTask _uploadTask;
-      _storage =
-          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      // setState(() {
-      _uploadTask =
-          _storage.ref().child('images').child(fileName).putFile(selected);
-      if (_uploadTask == null)
+        UploadTask _uploadTask;
+        _storage = FirebaseStorage.instanceFor(
+            bucket: 'gs://inprep-c8711.appspot.com');
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        // setState(() {
+        _uploadTask =
+            _storage.ref().child('images').child(fileName).putFile(selected);
+        if (_uploadTask == null)
+          return "";
+        else {
+          final snap = await _uploadTask.whenComplete(() => {});
+          return await snap.ref.getDownloadURL();
+        }
+      } else
         return "";
-      else {
-        final snap = await _uploadTask.whenComplete(() => {});
-        return await snap.ref.getDownloadURL();
-      }
     } catch (e) {
       print("UPLOAD ERROR $e");
       return "";
@@ -1349,20 +1352,26 @@ class _ProfileSetupState extends State<ProfileSetup> {
   Future<void> uploadImage(MyUser user, cover) async {
     showLoader(context);
     String upload = await pickImage();
-    if (cover) {
-      user.cover = upload;
-      await _databaseService.userCollection.doc(user.uid).update(user.toJson());
-      setState(() {
+    if (upload != "") {
+      if (cover) {
         user.cover = upload;
-        // url = upload;
-      });
-    } else {
-      user.photoUrl = upload;
-      await _databaseService.userCollection.doc(user.uid).update(user.toJson());
-      setState(() {
+        await _databaseService.userCollection
+            .doc(user.uid)
+            .update(user.toJson());
+        setState(() {
+          user.cover = upload;
+          // url = upload;
+        });
+      } else {
         user.photoUrl = upload;
-        // url = upload;
-      });
+        await _databaseService.userCollection
+            .doc(user.uid)
+            .update(user.toJson());
+        setState(() {
+          user.photoUrl = upload;
+          // url = upload;
+        });
+      }
     }
     Navigator.pop(context);
   }

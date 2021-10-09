@@ -2,7 +2,8 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/review.dart';
 import 'package:flutter/material.dart';
 import 'package:InPrep/models/user.dart';
-import 'package:getflutter/components/rating/gf_rating.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+// import 'package:getflutter/components/rating/gf_rating.dart';
 
 class MyReviews extends StatefulWidget {
   final MyUser user;
@@ -161,10 +162,30 @@ class _MyReviewsState extends State<MyReviews> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: GFRating(
-                                        value: review.stars,
-                                        color: Colors.yellow,
-                                        onChanged: (val) {},
+                                      child: RatingBar(
+                                        initialRating: review.stars,
+                                        minRating: 0,
+                                        maxRating: 5.0,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        ignoreGestures: true,
+                                        ratingWidget: RatingWidget(
+                                            half: Icon(
+                                              Icons.star_half,
+                                              color: Colors.amber,
+                                            ),
+                                            full: Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                            empty: Icon(
+                                              Icons.star_border_outlined,
+                                              color: Colors.amber,
+                                            )),
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        onRatingUpdate: (val) {},
                                       ),
                                     ),
                                   ],

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/session.dart';
 import 'package:InPrep/models/user.dart';
-import 'package:getflutter/components/rating/gf_rating.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+// import 'package:getflutter/components/rating/gf_rating.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,9 +36,9 @@ class _MySessionsState extends State<MySessions> {
       pses = 0;
     });
     List<Session> sessions = [];
-    print(" UID ${user.uid}");
+    // print(" UID ${user.uid}");
     sessions = await _databaseService.getSessions(uid: user.uid);
-    print(sessions.length);
+    // print(sessions.length);
     var nnses = 0, ccses = 0, ppses = 0;
     for (var ses in sessions) {
       nnses += 1;
@@ -52,9 +53,10 @@ class _MySessionsState extends State<MySessions> {
     pses = ppses;
 
     Timer(Duration(seconds: 2), () {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted)
+        setState(() {
+          isLoading = false;
+        });
     });
     return sessions;
   }
@@ -66,7 +68,7 @@ class _MySessionsState extends State<MySessions> {
     setState(() {
       dark = preferences.getBool('dark');
     });
-    print("GET BOOLEAN IN SESSIONS ${preferences.getBool('dark')}");
+    // print("GET BOOLEAN IN SESSIONS ${preferences.getBool('dark')}");
   }
 
   @override
@@ -212,9 +214,9 @@ class _MySessionsState extends State<MySessions> {
                 child: FutureBuilder(
                   future: getSessions(),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    print('INSIDE BUILDER');
+                    // print('INSIDE BUILDER');
                     if (snapshot.hasData) {
-                      print('INSIDE HAS DATA');
+                      // print('INSIDE HAS DATA');
                       if (snapshot.data.length != 0) {
                         if (!isLoading)
                           return ListView.builder(
@@ -233,7 +235,7 @@ class _MySessionsState extends State<MySessions> {
                                 String cText = completed
                                     ? "Session completed"
                                     : "Session in progress";
-                                print('INSIDE BUILDER');
+                                // print('INSIDE BUILDER');
 
                                 return Padding(
                                     padding: EdgeInsets.all(10),
@@ -373,19 +375,37 @@ class _MySessionsState extends State<MySessions> {
                                             ),
                                             if (completed)
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: GFRating(
-                                                  color: Colors.yellow,
-                                                  value: double.parse(snapshot
-                                                      .data[index].rating),
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      // rating = val;
-                                                    });
-                                                  },
-                                                ),
-                                              ),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: RatingBar(
+                                                    initialRating: double.parse(
+                                                        snapshot.data[index]
+                                                            .rating),
+                                                    minRating: 0,
+                                                    maxRating: 5.0,
+                                                    direction: Axis.horizontal,
+                                                    allowHalfRating: true,
+                                                    itemCount: 5,
+                                                    ignoreGestures: true,
+                                                    ratingWidget: RatingWidget(
+                                                        half: Icon(
+                                                          Icons.star_half,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        full: Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        empty: Icon(
+                                                          Icons
+                                                              .star_border_outlined,
+                                                          color: Colors.amber,
+                                                        )),
+                                                    itemPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 4.0),
+                                                    onRatingUpdate: (val) {},
+                                                  )),
                                             if (user.seeker && !completed)
                                               Center(
                                                 child: Padding(
@@ -508,13 +528,13 @@ class _MySessionsState extends State<MySessions> {
                           ),
                         );
                       } else {
-                        print('INSIDE NO LENGTH');
+                        // print('INSIDE NO LENGTH');
                         return Center(
                           child: Text('You have no Sessions.'),
                         );
                       }
                     } else {
-                      print('INSIDE NO DATA');
+                      // print('INSIDE NO DATA');
                       return Center(
                         child: Text('You have no Sessions.'),
                       );

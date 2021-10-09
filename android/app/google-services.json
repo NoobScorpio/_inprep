@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "40464303824",
+    "project_id": "inprep-c8711",
+    "storage_bucket": "inprep-c8711.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40464303824:android:d12b4844c687fe2f5080d5",
+        "android_client_info": {
+          "package_name": "com.inprep.inprep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40464303824-amr74m13h1e64othnee7k9ppeloesqp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inprep.inprep",
+            "certificate_hash": "14fe90a895d9e1821e3911b1e05161f85bdbb4da"
+          }
+        },
+        {
+          "client_id": "40464303824-rtd9dp2iksvl9aflu5lersjf0n0hfae7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inprep.inprep",
+            "certificate_hash": "56aeae715cc4d88cda78bdd69d6e628c5cf37687"
+          }
+        },
+        {
+          "client_id": "40464303824-h4enl40o6h13v8c5l3ianutakuq4tq0m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYRqXIYIPndTIN17cxsfGQuT-2-9s-Deg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40464303824-h4enl40o6h13v8c5l3ianutakuq4tq0m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "40464303824-q66j5vi4r98jmdttu5r523qugmmrfr0f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iosinprep.inprep"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

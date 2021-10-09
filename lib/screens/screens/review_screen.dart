@@ -5,7 +5,8 @@ import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/rating/gf_rating.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+// import 'package:getflutter/components/rating/gf_rating.dart';
 
 class ReviewScreen extends StatefulWidget {
   final giver;
@@ -22,7 +23,7 @@ class ReviewScreen extends StatefulWidget {
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
-  double rating = 1;
+  double rating = 0.0;
   final giver;
   final receiver;
   final gName;
@@ -84,9 +85,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   ),
                 ),
                 Center(
-                  child: GFRating(
-                    value: rating,
-                    onChanged: (val) {
+                  child: RatingBar.builder(
+                    initialRating: rating,
+                    minRating: 0,
+                    direction: Axis.horizontal,
+
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (val) {
                       setState(() {
                         rating = val;
                       });

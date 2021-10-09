@@ -10,6 +10,7 @@ import 'package:InPrep/utils/loader.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:getflutter/components/rating/gf_rating.dart';
@@ -62,13 +63,29 @@ Widget buildReviewRow(context, {dark, Review review}) {
             color: color,
           ),
         ),
-        GFRating(
-          padding: EdgeInsets.all(0),
-          margin: EdgeInsets.all(0),
-          size: 20,
-          color: Colors.yellow,
-          value: review.stars,
-          onChanged: (val) {},
+        RatingBar(
+          initialRating: review.stars,
+          minRating: 0,
+          maxRating: 5.0,
+          direction: Axis.horizontal,
+          allowHalfRating: true,
+          itemCount: 5,
+          ignoreGestures: true,
+          ratingWidget: RatingWidget(
+              half: Icon(
+                Icons.star_half,
+                color: Colors.amber,
+              ),
+              full: Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              empty: Icon(
+                Icons.star_border_outlined,
+                color: Colors.amber,
+              )),
+          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+          onRatingUpdate: (val) {},
         ),
       ],
     ),
