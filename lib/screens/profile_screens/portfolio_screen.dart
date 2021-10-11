@@ -82,7 +82,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Expanded(
+                                    Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          100,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -100,7 +102,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                "${portfolio.from} - ${(portfolio.current) ? 'Present' : portfolio.to}",
+                                                "${portfolio.from} - ${(portfolio.current ?? false) ? 'Present' : portfolio.to}",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontSize: 16,

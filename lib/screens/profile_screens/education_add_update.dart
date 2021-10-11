@@ -92,7 +92,7 @@ class _AddUpdateEducationState extends State<AddUpdateEducation> {
                   padding: EdgeInsets.all(0),
                   hint: 'Enter education degree name',
                   labelText: 'Degree',
-                  prefixIcon: Icon(Icons.star_rate_outlined,
+                  prefixIcon: Icon(Icons.grade,
                       color:
                           dark ? Colors.white : Theme.of(context).primaryColor),
                   keyboardType: TextInputType.name,
@@ -105,7 +105,7 @@ class _AddUpdateEducationState extends State<AddUpdateEducation> {
                   padding: EdgeInsets.all(0),
                   hint: 'Enter education institute country',
                   labelText: 'Country',
-                  prefixIcon: Icon(Icons.star_rate_outlined,
+                  prefixIcon: Icon(Icons.place_outlined,
                       color:
                           dark ? Colors.white : Theme.of(context).primaryColor),
                   keyboardType: TextInputType.name,
@@ -121,7 +121,7 @@ class _AddUpdateEducationState extends State<AddUpdateEducation> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter starting year',
                         labelText: 'Year From',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),
@@ -137,7 +137,7 @@ class _AddUpdateEducationState extends State<AddUpdateEducation> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter ending year',
                         labelText: 'Year To',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),

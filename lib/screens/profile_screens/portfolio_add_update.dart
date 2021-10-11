@@ -98,7 +98,7 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter starting year',
                         labelText: 'Year From',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),
@@ -114,7 +114,7 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter ending year',
                         labelText: 'Year To',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),

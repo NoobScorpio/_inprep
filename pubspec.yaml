@@ -55,7 +55,7 @@ dependencies:
   introduction_screen: ^2.0.0
 #TODO:CHANGE VERSION BEFORE COMMIT
   flutter_rating_bar: ^4.0.0
-  webview_flutter: ^2.1.1
+  webview_flutter: ^2.0.1
   country_picker: ^2.0.0
   passcode_screen: ^1.2.2+1
   percent_indicator: ^3.3.0-nullsafety.1

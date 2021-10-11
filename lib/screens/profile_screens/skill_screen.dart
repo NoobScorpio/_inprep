@@ -74,52 +74,68 @@ class _SkillScreenState extends State<SkillScreen> {
                             child: Column(
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    SizedBox(width: 5.0),
-                                    Text(
-                                      skill.name.toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
+                                    Container(
+                                      width: MediaQuery.of(context).size.width -
+                                          100,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            skill.name.toUpperCase(),
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.0),
+                                          Expanded(
+                                            flex: 5,
+                                            child: LinearProgressIndicator(
+                                              value: (skill.rank / 10).abs(),
+                                            ),
+                                          ),
+                                          SizedBox(width: 20.0),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(width: 10.0),
-                                    Expanded(
-                                      flex: 5,
-                                      child: LinearProgressIndicator(
-                                        value: (skill.rank / 10).abs(),
-                                      ),
-                                    ),
-                                    SizedBox(width: 20.0),
-                                    InkWell(
-                                        onTap: () async {
-                                          showLoader(context);
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () async {
+                                              showLoader(context);
 
-                                          await _databaseService.skillCollection
-                                              .doc(skill.sid)
-                                              .delete();
-                                          currUser.skills.remove(skill);
-                                          await _databaseService.userCollection
-                                              .doc(currUser.uid)
-                                              .update(currUser.toJson());
-                                          pop(context);
-                                          showToast(context, "Skill deleted");
-                                        },
-                                        child: Icon(Icons.delete_outline)),
-                                    SizedBox(width: 10.0),
-                                    InkWell(
-                                        onTap: () {
-                                          push(
-                                              context,
-                                              AddUpdateSkill(
-                                                currUser: currUser,
-                                                edit: true,
-                                                skill: skill,
-                                              ));
-                                        },
-                                        child: Icon(Icons.edit_outlined)),
+                                              await _databaseService
+                                                  .skillCollection
+                                                  .doc(skill.sid)
+                                                  .delete();
+                                              currUser.skills.remove(skill);
+                                              await _databaseService
+                                                  .userCollection
+                                                  .doc(currUser.uid)
+                                                  .update(currUser.toJson());
+                                              pop(context);
+                                              showToast(
+                                                  context, "Skill deleted");
+                                            },
+                                            child: Icon(Icons.delete_outline)),
+                                        SizedBox(width: 10.0),
+                                        InkWell(
+                                            onTap: () {
+                                              push(
+                                                  context,
+                                                  AddUpdateSkill(
+                                                    currUser: currUser,
+                                                    edit: true,
+                                                    skill: skill,
+                                                  ));
+                                            },
+                                            child: Icon(Icons.edit_outlined)),
+                                      ],
+                                    )
                                   ],
                                 ),
                                 Divider()

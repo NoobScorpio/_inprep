@@ -39,7 +39,6 @@ class ProfileSetup extends StatefulWidget {
 
 class _ProfileSetupState extends State<ProfileSetup> {
   DatabaseService _databaseService = DatabaseService();
-  String url = "";
   var catValue = 'Select',
       subCatValue = 'Select',
       cityValue = "Select",
@@ -92,7 +91,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
         visibleContact = phoneCode != '' && phoneCode != null ? true : false;
         socialVisible = user.social != null ? true : false;
         uploadConf = true;
-        url = user.photoUrl;
       });
     } else {
       setState(() {
@@ -1209,8 +1207,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
                                   currUser.city = cityValue;
                                   currUser.desc = descriptionController.text;
                                   currUser.state = stateValue;
-                                  currUser.photoUrl =
-                                      url != null ? url : (user.photoUrl ?? "");
                                   currUser.other = otherCont.text;
                                   currUser.email = user.email;
                                   currUser.profile = true;
@@ -1360,7 +1356,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
             .update(user.toJson());
         setState(() {
           user.cover = upload;
-          // url = upload;
         });
       } else {
         user.photoUrl = upload;
@@ -1369,7 +1364,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
             .update(user.toJson());
         setState(() {
           user.photoUrl = upload;
-          // url = upload;
         });
       }
     }

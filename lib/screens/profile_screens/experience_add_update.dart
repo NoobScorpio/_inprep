@@ -89,7 +89,7 @@ class _AddUpdateExperienceState extends State<AddUpdateExperience> {
                   padding: EdgeInsets.all(0),
                   hint: 'Enter experience position',
                   labelText: 'Position',
-                  prefixIcon: Icon(Icons.star_rate_outlined,
+                  prefixIcon: Icon(Icons.grade,
                       color:
                           dark ? Colors.white : Theme.of(context).primaryColor),
                   keyboardType: TextInputType.name,
@@ -105,7 +105,7 @@ class _AddUpdateExperienceState extends State<AddUpdateExperience> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter starting year',
                         labelText: 'Year From',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),
@@ -121,7 +121,7 @@ class _AddUpdateExperienceState extends State<AddUpdateExperience> {
                         padding: EdgeInsets.all(0),
                         hint: 'Enter ending year',
                         labelText: 'Year To',
-                        prefixIcon: Icon(Icons.star_rate_outlined,
+                        prefixIcon: Icon(Icons.date_range,
                             color: dark
                                 ? Colors.white
                                 : Theme.of(context).primaryColor),

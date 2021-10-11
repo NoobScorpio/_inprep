@@ -279,6 +279,7 @@ class _ProfileViewState extends State<ProfileView> {
 
           Row(
             children: <Widget>[
+              // Text(data.email),
               SizedBox(width: 30.0),
               Icon(
                 Icons.phone,
