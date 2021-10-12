@@ -87,14 +87,18 @@ class _EducationScreenState extends State<EducationScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            education.institute.toUpperCase() +
-                                                ", ${education.country}",
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w500,
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              education.institute
+                                                      .toUpperCase() +
+                                                  ", ${education.country}",
+                                              textAlign: TextAlign.left,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
                                           Text(

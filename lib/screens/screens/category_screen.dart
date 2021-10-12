@@ -71,7 +71,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       IntroTexts.introC.start(context);
     } else if (first == true) {
       await preferences.setBool('firstHome', false);
-      Navigator.push(
+      await Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginWelcome()));
       IntroTexts.introC.start(context);
     } else {

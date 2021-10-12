@@ -81,24 +81,39 @@ class _SkillScreenState extends State<SkillScreen> {
                                       width: MediaQuery.of(context).size.width -
                                           100,
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          SizedBox(width: 5.0),
-                                          Text(
-                                            skill.name.toUpperCase(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: CircleAvatar(
+                                              radius: 3,
                                             ),
                                           ),
-                                          SizedBox(width: 10.0),
                                           Expanded(
-                                            flex: 5,
-                                            child: LinearProgressIndicator(
-                                              value: (skill.rank / 10).abs(),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  skill.name.toUpperCase(),
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                LinearProgressIndicator(
+                                                  value:
+                                                      (skill.rank / 10).abs(),
+                                                ),
+                                                SizedBox(width: 20.0),
+                                              ],
                                             ),
                                           ),
-                                          SizedBox(width: 20.0),
                                         ],
                                       ),
                                     ),

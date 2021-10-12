@@ -14,7 +14,7 @@ import 'package:InPrep/utils/profile_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../screens/chat_screen.dart';
+import '../chat/chat_screen.dart';
 
 class ProfileView extends StatefulWidget {
   final uid;

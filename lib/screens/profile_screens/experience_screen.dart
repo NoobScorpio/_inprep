@@ -74,6 +74,7 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 5, horizontal: 12),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   mainAxisAlignment:
@@ -85,10 +86,13 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Text(
                                             experience.title.toUpperCase(),
-                                            textAlign: TextAlign.center,
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w500,

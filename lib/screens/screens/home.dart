@@ -15,7 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:InPrep/auth/auth.dart';
 import 'package:InPrep/screens/screens/category_screen.dart';
-import 'package:InPrep/screens/screens/chats.dart';
+import 'package:InPrep/screens/chat/chats.dart';
 import 'package:InPrep/screens/profile_screens/profile.dart';
 import 'package:InPrep/screens/screens/signin_signup.dart';
 import 'package:InPrep/models/user.dart';

@@ -11,12 +11,14 @@ class Offer {
   int meetCount;
   bool cancel;
   bool accepted;
+  bool isSkype;
   Timestamp timestamp;
   List<Meeting> meets;
   bool declined;
 
   Offer(
       {this.meid,
+      this.isSkype,
       this.declined,
       this.cid,
       this.oid,
@@ -29,6 +31,7 @@ class Offer {
       this.meets});
 
   Offer.fromJson(Map<String, dynamic> json) {
+    isSkype = json['isSkype'];
     meid = json['meid'];
     accepted = json['accepted'];
     declined = json['declined'];
@@ -50,6 +53,7 @@ class Offer {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['meid'] = this.meid;
+    data['isSkype'] = this.isSkype;
     data['accepted'
         ''] = this.accepted;
     data['cid'] = this.cid;

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:InPrep/models/chat.dart';
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
-import 'package:InPrep/screens/screens/chat_screen.dart';
+import 'package:InPrep/screens/chat/chat_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';

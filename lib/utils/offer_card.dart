@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/models/offer.dart';
 import 'package:InPrep/models/user.dart';
-import 'package:InPrep/screens/screens/date_time.dart';
+import 'package:InPrep/screens/chat/date_time.dart';
 import 'package:InPrep/screens/group/invite_screen.dart';
 import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:InPrep/utils/loader.dart';
@@ -160,6 +160,8 @@ class OfferCard extends StatelessWidget {
                                                     MyDateTime(
                                                       dark: dark,
                                                       cid: cid,
+                                                      isSkype:
+                                                          offer.isSkype ?? true,
                                                       sid: sid,
                                                       rid: rid,
                                                       displayName: displayName,
@@ -336,78 +338,17 @@ class OfferCard extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Container(
-                                        height: 35,
-                                        child: FlatButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          onPressed: () async {
-                                            showLoader(context);
-                                            bool confirm =
-                                                await _databaseService
-                                                    .getAppointment(cid: cid);
-                                            Navigator.pop(context);
-                                            if (!confirm)
-                                              showToast(context,
-                                                  'No meeting scheduled');
-                                            else if (!meetTime)
-                                              showToast(context,
-                                                  'Kindly try again during meeting time');
-                                            else {
-                                              showToast(
-                                                  context, 'Launching Skype');
-                                              _launchURL(
-                                                  context: context,
-                                                  rid: rid,
-                                                  sid: sid,
-                                                  userID: skype);
-                                            }
-                                          },
-                                          color: Colors.blueAccent,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                FontAwesomeIcons.skype,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                'Skype',
-                                                style: TextStyle(
-                                                    color: dark
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Container(
-                                        height: 35,
-                                        child: FlatButton(
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          onPressed: () async {
-                                            if (offer.link == "") {
-                                              showToast(context,
-                                                  "Zoom meeting link not added");
-                                            } else {
+                                  if (offer.isSkype ?? true)
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: Container(
+                                          height: 35,
+                                          child: FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            onPressed: () async {
                                               showLoader(context);
                                               bool confirm =
                                                   await _databaseService
@@ -421,41 +362,107 @@ class OfferCard extends StatelessWidget {
                                                     'Kindly try again during meeting time');
                                               else {
                                                 showToast(
-                                                    context, 'Launching Zoom');
-                                                if (await canLaunch(
-                                                    offer.link)) {
-                                                  launch(offer.link);
-                                                }
+                                                    context, 'Launching Skype');
+                                                _launchURL(
+                                                    context: context,
+                                                    rid: rid,
+                                                    sid: sid,
+                                                    userID: skype);
                                               }
-                                            }
-                                          },
-                                          color: Colors.blueAccent,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                FontAwesomeIcons.video,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                'Zoom',
-                                                style: TextStyle(
-                                                    color: dark
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 16),
-                                              ),
-                                            ],
+                                            },
+                                            color: Colors.blueAccent,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.skype,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  'Skype Call',
+                                                  style: TextStyle(
+                                                      color: dark
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 16),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  if (!(offer.isSkype ?? true))
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: Container(
+                                          height: 35,
+                                          child: FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            onPressed: () async {
+                                              if (offer.link == "") {
+                                                showToast(context,
+                                                    "Zoom meeting link not added");
+                                              } else {
+                                                showLoader(context);
+                                                bool confirm =
+                                                    await _databaseService
+                                                        .getAppointment(
+                                                            cid: cid);
+                                                Navigator.pop(context);
+                                                if (!confirm)
+                                                  showToast(context,
+                                                      'No meeting scheduled');
+                                                else if (!meetTime)
+                                                  showToast(context,
+                                                      'Kindly try again during meeting time');
+                                                else {
+                                                  showToast(context,
+                                                      'Launching Zoom');
+                                                  if (await canLaunch(
+                                                      offer.link)) {
+                                                    launch(offer.link);
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            color: Colors.blueAccent,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  FontAwesomeIcons.video,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  'Zoom Call',
+                                                  style: TextStyle(
+                                                      color: dark
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontSize: 16),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),

@@ -32,7 +32,7 @@ ListTile buildExperienceRow(context,
       company,
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: Text("$position ($from-$to)"),
+    subtitle: Text("$position ($from-${to ?? "Present"})"),
   );
 }
 
@@ -121,7 +121,7 @@ ListTile buildEducationRow(context,
       '${institue == null ? 'Institute' : institue.toUpperCase()}, ${country == null ? 'Country' : country.toUpperCase()}',
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: Text("$degree ($from-$to)"),
+    subtitle: Text("$degree ($from-${to ?? "Present"})"),
   );
 }
 
@@ -163,25 +163,6 @@ ListTile buildSalaryRow(context, {String salary1, String salary2}) {
   );
 }
 
-ListTile buildExpRow(context, {String year}) {
-  return ListTile(
-    leading: Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 20.0),
-      child: Icon(
-        Icons.check_circle,
-        size: 12.0,
-        color: Theme.of(context).primaryColor,
-      ),
-    ),
-    title: Text(
-      'Experience',
-      style: TextStyle(
-          color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-    ),
-    subtitle: Text(int.parse(year) > 1 ? "$year years" : "$year year"),
-  );
-}
-
 ListTile buidPortfolioRow(context, dummy, {dark, title, to, from, image}) {
   Color color = dark ? Colors.white : Theme.of(context).primaryColor;
   return ListTile(
@@ -197,7 +178,7 @@ ListTile buidPortfolioRow(context, dummy, {dark, title, to, from, image}) {
       '$title',
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: dummy ? Text('') : Text('$from-$to'),
+    subtitle: dummy ? Text('') : Text('$from-${to ?? "Present"}'),
     trailing: image == '' || image == null
         ? Text('')
         : GestureDetector(

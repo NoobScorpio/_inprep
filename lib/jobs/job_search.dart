@@ -5,7 +5,7 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/profile_widgets.dart';
 import 'package:InPrep/screens/profile_screens/profile_view.dart';
-import '../screens/screens/chat_screen.dart';
+import '../screens/chat/chat_screen.dart';
 import 'package:provider/provider.dart';
 
 class JobSearch extends StatefulWidget {
@@ -94,7 +94,7 @@ class _JobSearchState extends State<JobSearch> {
                 buildSalaryRow(context,
                     salary1: job.salaryFrom.toString(),
                     salary2: job.salaryTo.toString()),
-                buildExpRow(context, year: job.exp.toString()),
+                // buildExpRow(context, year: job.exp.toString()),
                 buildLocRow(context, city: job.city, country: job.country),
                 SizedBox(height: 20.0),
                 // buildTitle("Description"),

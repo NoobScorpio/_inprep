@@ -20,6 +20,7 @@ class MyDateTime extends StatefulWidget {
   final displayName;
   final name, zoomLink, skypeLink;
   final edit, date, time, cost, meets, oid, meid;
+  final bool isSkype;
   static String id = 'MyDateTime';
   MyDateTime(
       {this.cid,
@@ -36,7 +37,8 @@ class MyDateTime extends StatefulWidget {
       this.meets,
       this.oid,
       this.meid,
-      this.skypeLink});
+      this.skypeLink,
+      this.isSkype});
   @override
   _MyDateTimeState createState() => _MyDateTimeState(
       dark: dark,
@@ -54,6 +56,7 @@ class _MyDateTimeState extends State<MyDateTime> {
   final displayName;
   final dark;
   final name;
+  bool isSkype = true;
   _MyDateTimeState(
       {this.cid, this.dark, this.displayName, this.name, this.rid, this.sid});
   String _date = 'Not Set';
@@ -75,7 +78,9 @@ class _MyDateTimeState extends State<MyDateTime> {
       meets = widget.meets;
       zoomCont.text = widget.zoomLink ?? "";
       skypeCont.text = widget.skypeLink ?? "";
+      isSkype = widget.isSkype ?? true;
     }
+    print("$isSkype skype");
   }
 
   @override
@@ -256,21 +261,89 @@ class _MyDateTimeState extends State<MyDateTime> {
                           ),
                           color: Colors.white,
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Select',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: dark ?? false
+                                      ? Colors.grey
+                                      : Theme.of(context).primaryColor,
+                                  fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isSkype = true;
+                                  });
+                                },
+                                child: Text("Skype",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16)),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      isSkype ? Colors.blue : Colors.grey),
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 50)),
+                                )),
+                            SizedBox(
+                              width: 20.0,
+                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isSkype = false;
+                                  });
+                                },
+                                child: Text("Zoom",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16)),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      !isSkype ? Colors.blue : Colors.grey),
+                                  padding: MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(
+                                          vertical: 12, horizontal: 50)),
+                                )),
+                          ],
+                        ),
                         SizedBox(
                           height: 20.0,
                         ),
-                        MyTextFormField(
-                          controller: zoomCont,
-                          padding: EdgeInsets.all(0),
-                          // maxline: 5,
-                          hint: "Copy and paste zoom meeting invite link\n \n",
-                          labelText: 'Zoom Meeting Link',
-                          prefixIcon: Icon(Icons.link,
-                              color: dark
-                                  ? Colors.white
-                                  : Theme.of(context).primaryColor),
-                          keyboardType: TextInputType.number,
-                        ),
+                        if (!isSkype)
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                        if (!isSkype)
+                          MyTextFormField(
+                            controller: zoomCont,
+                            padding: EdgeInsets.all(0),
+                            // maxline: 5,
+                            hint:
+                                "Copy and paste zoom meeting invite link\n \n",
+                            labelText: 'Zoom Meeting Link',
+                            prefixIcon: Icon(Icons.link,
+                                color: dark
+                                    ? Colors.white
+                                    : Theme.of(context).primaryColor),
+                            keyboardType: TextInputType.number,
+                          ),
                         SizedBox(
                           height: 20.0,
                         ),
@@ -418,6 +491,7 @@ class _MyDateTimeState extends State<MyDateTime> {
                                           if (widget.edit == null) {
                                             // //print('NOT EDIT');
                                             Offer offer = Offer(
+                                                isSkype: isSkype,
                                                 meid: '',
                                                 cid: cid,
                                                 link: zoomCont.text ?? "",
@@ -462,6 +536,7 @@ class _MyDateTimeState extends State<MyDateTime> {
                                             // //print('@OFFER EDIT');
                                             Offer offer = Offer(
                                                 meid: widget.meid,
+                                                isSkype: isSkype,
                                                 cid: cid,
                                                 oid: '',
                                                 accepted: false,

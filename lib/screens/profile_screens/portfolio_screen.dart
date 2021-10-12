@@ -89,27 +89,35 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                portfolio.title.toUpperCase(),
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                160,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  portfolio.title.toUpperCase(),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                "${portfolio.from} - ${(portfolio.current ?? false) ? 'Present' : portfolio.to}",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
+                                                Text(
+                                                  "${portfolio.from} - ${(portfolio.current ?? false) ? 'Present' : portfolio.to}",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(
@@ -167,7 +175,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                                 );
                                               },
                                             ),
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
