@@ -3,7 +3,7 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/experience.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';

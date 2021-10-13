@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/user_bloc/userLogInCubit.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/loginUser.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';

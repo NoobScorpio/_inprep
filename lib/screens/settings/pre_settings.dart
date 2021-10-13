@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:InPrep/screens/settings/SupportScreen.dart';
 import 'package:InPrep/screens/settings/faqs.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/loginUser.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';

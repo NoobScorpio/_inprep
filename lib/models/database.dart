@@ -5,7 +5,7 @@ import 'package:InPrep/models/group_link.dart';
 import 'package:InPrep/models/group_offer.dart';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/models/review.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:InPrep/models/Skill.dart';

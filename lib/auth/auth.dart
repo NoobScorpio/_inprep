@@ -1,4 +1,4 @@
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:InPrep/models/database.dart';

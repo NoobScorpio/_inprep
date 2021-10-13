@@ -2,7 +2,7 @@ import 'package:InPrep/screens/screens/filterScreen.dart';
 import 'package:InPrep/screens/screens/loginWelcome.dart';
 import 'package:InPrep/screens/settings/pre_settings.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';

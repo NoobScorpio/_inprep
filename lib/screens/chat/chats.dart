@@ -6,7 +6,7 @@ import 'package:InPrep/models/message.dart';
 import 'package:InPrep/screens/group/group__chat_screen.dart';
 import 'package:InPrep/screens/group/invite_screen.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -142,6 +142,7 @@ class _ChatsState extends State<Chats> {
           stream: _databaseService.chatsCollection
               .orderBy('timestamp', descending: true)
               .where('users', arrayContains: sid)
+              // .where('users', arrayContains: "iIthApqh0nOdUrgmLe5LRZlB3hz1")
               .snapshots(),
           builder: (BuildContext context, snapshot) {
             // if (preferences != null)
@@ -215,7 +216,9 @@ class _ChatsState extends State<Chats> {
         StreamBuilder<QuerySnapshot>(
           stream: _databaseService.groupsCollection
               .orderBy('Timestamp', descending: true)
-              .where('userIDS', arrayContainsAny: [sid]).snapshots(),
+              .where('userIDS', arrayContainsAny: [sid])
+              // .where('userIDS', arrayContainsAny: ["iIthApqh0nOdUrgmLe5LRZlB3hz1"])
+              .snapshots(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               if (snapshot.data.docs.length != 0) {

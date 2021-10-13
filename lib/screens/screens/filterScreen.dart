@@ -5,7 +5,7 @@ import 'package:InPrep/screens/screens/locationSelectScreen.dart';
 import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:InPrep/screens/screens/selectCategoryScreen.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/my_button.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:country_picker/country_picker.dart';

@@ -7,7 +7,7 @@ import 'package:InPrep/screens/profile_screens/experience_add_update.dart';
 import 'package:InPrep/screens/profile_screens/portfolio_add_update.dart';
 import 'package:InPrep/screens/profile_screens/skill_add_update.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

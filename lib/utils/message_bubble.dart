@@ -2,7 +2,7 @@ import 'dart:io' as Io;
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

@@ -6,7 +6,7 @@ import 'package:InPrep/models/experience.dart';
 import 'package:InPrep/models/portfolio.dart';
 import 'package:InPrep/models/review.dart';
 import 'package:InPrep/utils/app_utils.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,7 +32,8 @@ ListTile buildExperienceRow(context,
       company,
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: Text("$position ($from-${to ?? "Present"})"),
+    subtitle:
+        Text("$position ($from-${to == null || to == "" ? "Present" : to})"),
   );
 }
 
@@ -121,7 +122,8 @@ ListTile buildEducationRow(context,
       '${institue == null ? 'Institute' : institue.toUpperCase()}, ${country == null ? 'Country' : country.toUpperCase()}',
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: Text("$degree ($from-${to ?? "Present"})"),
+    subtitle:
+        Text("$degree ($from-${to == null || to == "" ? "Present" : to})"),
   );
 }
 
@@ -178,7 +180,9 @@ ListTile buidPortfolioRow(context, dummy, {dark, title, to, from, image}) {
       '$title',
       style: TextStyle(color: color, fontWeight: FontWeight.bold),
     ),
-    subtitle: dummy ? Text('') : Text('$from-${to ?? "Present"}'),
+    subtitle: dummy
+        ? Text('')
+        : Text('$from-${to == null || to == "" ? "Present" : to}'),
     trailing: image == '' || image == null
         ? Text('')
         : GestureDetector(

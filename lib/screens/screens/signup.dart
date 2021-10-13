@@ -1,4 +1,4 @@
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/loginUser.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';

@@ -14,7 +14,7 @@ import 'package:instant/instant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/constants.dart';
-import '../../utils/loader.dart';
+import '../../utils/loader_notifications.dart';
 
 class GroupLinkCard extends StatelessWidget {
   final MyUser currUser;

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:InPrep/models/chat.dart';
 import 'package:InPrep/screens/blog/blog_home.dart';
 import 'package:InPrep/utils/dynamic_link.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/loginUser.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -219,7 +220,9 @@ class _HomeState extends State<Home> {
     sid = Provider.of<MyUser>(context) == null
         ? ""
         : Provider.of<MyUser>(context).uid;
-
+    if(sid!=null && sid!=""){
+      if (Platform.isIOS) badgeResetNotification(uid: sid);
+    }
     return user == null
         ? SignInUp()
         : Scaffold(

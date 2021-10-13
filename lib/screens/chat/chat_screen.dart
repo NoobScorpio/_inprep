@@ -6,7 +6,7 @@ import 'package:InPrep/models/chat.dart';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/screens/screens/review_screen.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

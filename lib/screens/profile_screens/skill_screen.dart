@@ -3,7 +3,7 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/profile_screens/skill_add_update.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

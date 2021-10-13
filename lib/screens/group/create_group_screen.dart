@@ -5,7 +5,7 @@ import 'package:InPrep/models/group.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/group/group__chat_screen.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';

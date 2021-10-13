@@ -6,7 +6,7 @@ import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../utils/loader.dart';
+import '../../utils/loader_notifications.dart';
 
 class BlogCard extends StatelessWidget {
   final image,

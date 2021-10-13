@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:InPrep/models/chat.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/constants.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:InPrep/models/database.dart';

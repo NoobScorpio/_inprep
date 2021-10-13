@@ -6,7 +6,7 @@ import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/chat/date_time.dart';
 import 'package:InPrep/screens/group/invite_screen.dart';
 import 'package:InPrep/screens/profile_screens/profile_view.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

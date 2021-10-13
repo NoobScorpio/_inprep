@@ -14,7 +14,7 @@ import 'package:InPrep/utils/constants.dart';
 import 'package:InPrep/screens/group/group_link_card.dart';
 import 'package:InPrep/screens/group/group_offer_card.dart';
 import 'package:InPrep/utils/image_message.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/message_bubble.dart';
 import 'package:InPrep/utils/offer_card.dart';
 import 'package:InPrep/utils/statics.dart';

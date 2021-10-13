@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:http/http.dart' show get;
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

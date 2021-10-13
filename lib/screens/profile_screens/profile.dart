@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:InPrep/screens/screens/welcome.dart';
 import 'package:InPrep/user_bloc/userLogInCubit.dart';
 import 'package:InPrep/user_bloc/userState.dart';
-import 'package:InPrep/utils/loader.dart';
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -107,7 +107,7 @@ class _ProfileState extends State<Profile> {
             stream: FirebaseFirestore.instance
                 .collection('user')
                 .doc(state.user.uid)
-                // .doc("03y1fw7vslcucTSaLRbQhWs39zH3")
+                // .doc("iIthApqh0nOdUrgmLe5LRZlB3hz1")
                 .snapshots(),
             builder: (context, snapshot) {
               // if (!isConnected) {
