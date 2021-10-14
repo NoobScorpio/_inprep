@@ -106,7 +106,8 @@ class _InviteScreenState extends State<InviteScreen> {
                   child: ListView.builder(
                       itemCount: foundUsers.length,
                       itemBuilder: (context, index) {
-                        return userComponent(user: foundUsers[index]);
+                        return userComponent(
+                            user: foundUsers[index], dark: dark);
                       }),
                 ),
             ],
@@ -126,7 +127,7 @@ class _InviteScreenState extends State<InviteScreen> {
     );
   }
 
-  userComponent({MyUser user}) {
+  userComponent({MyUser user, bool dark}) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -199,7 +200,7 @@ class _InviteScreenState extends State<InviteScreen> {
                 child: Center(
                     child: Text(
                   usersInvite[user.uid] ? 'Unselect' : 'Select',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: dark ? Colors.white : Colors.black),
                 ))),
           )
         ],
