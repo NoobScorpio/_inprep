@@ -106,8 +106,8 @@ class _ProfileState extends State<Profile> {
           return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('user')
-                // .doc(state.user.uid)
-                .doc("iIthApqh0nOdUrgmLe5LRZlB3hz1")
+                .doc(state.user.uid)
+                // .doc("iIthApqh0nOdUrgmLe5LRZlB3hz1")
                 .snapshots(),
             builder: (context, snapshot) {
               // if (!isConnected) {
