@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:images_picker/images_picker.dart';
 import 'package:instant/instant.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'create_group_link.dart';
 
@@ -519,28 +520,38 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Future<void> uploadFile() async {
-    showLoader(context);
-    String upload = await pickFile();
+    PermissionStatus storage = await Permission.storage.request();
+    if (storage.isGranted) {
+      showLoader(context);
+      String upload = await pickFile();
 
-    print("RETURN URLL $upload");
-    if (!(upload == null || upload == '')) {
-      await sendGroupMessage(upload.split("\$")[1], 5, upload);
-    } else {
-      print('ERROR');
-    }
-    Navigator.pop(context);
+      print("RETURN URLL $upload");
+      if (!(upload == null || upload == '')) {
+        await sendGroupMessage(upload.split("\$")[1], 5, upload);
+      } else {
+        print('ERROR');
+      }
+      Navigator.pop(context);
+    } else
+      showToast(context, 'Permission not granted');
   }
 
   Future<void> uploadImage(camera) async {
-    showLoader(context);
-    String upload = await pickImage(camera);
+    PermissionStatus storage = await Permission.storage.request();
+    PermissionStatus photos = await Permission.photos.request();
+    PermissionStatus camera = await Permission.camera.request();
+    if (storage.isGranted && photos.isGranted && camera.isGranted) {
+      showLoader(context);
+      String upload = await pickImage(camera);
 
-    print("RETURN URLL $upload");
-    if (!(upload == null || upload == '')) {
-      await sendGroupMessage("Image", 1, upload);
-    } else {
-      print('ERROR');
-    }
-    Navigator.pop(context);
+      print("RETURN URLL $upload");
+      if (!(upload == null || upload == '')) {
+        await sendGroupMessage("Image", 1, upload);
+      } else {
+        print('ERROR');
+      }
+      Navigator.pop(context);
+    } else
+      showToast(context, 'Permission not granted');
   }
 }

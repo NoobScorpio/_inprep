@@ -276,8 +276,10 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
   }
 
   Future<void> uploadImage(MyUser user) async {
-    PermissionStatus permission = await Permission.storage.request();
-    if (permission.isGranted) {
+    PermissionStatus storage = await Permission.storage.request();
+    PermissionStatus photos = await Permission.photos.request();
+    PermissionStatus camera = await Permission.camera.request();
+    if (storage.isGranted && photos.isGranted && camera.isGranted) {
       showLoader(context);
       String upload = await pickImage();
       setState(() {
