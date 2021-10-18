@@ -647,75 +647,65 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> uploadFile() async {
-    PermissionStatus permission = await Permission.storage.request();
-    if (permission.isGranted) {
-      showLoader(context);
-      String upload = await pickFile();
+    showLoader(context);
+    String upload = await pickFile();
 
-      print("RETURN URLL $upload");
-      if (!(upload == null || upload == '')) {
-        await _databaseService.sendMessage(
-          cid: cid,
-          sender: user.displayName,
-          receiver: name,
-          time: msgTime(),
-          rid: rid,
-          type: 3,
-          sid: user.uid,
-          msg: upload.split("\$")[1],
-          image: upload.split("\$")[0],
-        );
-        var doc = await _databaseService.userCollection.doc(rid).get();
-        int badge = MyUser.fromJson(doc.data()).badge;
-        await _databaseService.userCollection
-            .doc(rid)
-            .update({"badge": badge + 1});
-        await _databaseService.chatsCollection
-            .doc(cid)
-            .update({"timestamp": Timestamp.now()});
-      } else {
-        print('ERROR');
-      }
-      Navigator.pop(context);
-    } else
-      showToast(context, "Permission not granted");
+    print("RETURN URLL $upload");
+    if (!(upload == null || upload == '')) {
+      await _databaseService.sendMessage(
+        cid: cid,
+        sender: user.displayName,
+        receiver: name,
+        time: msgTime(),
+        rid: rid,
+        type: 3,
+        sid: user.uid,
+        msg: upload.split("\$")[1],
+        image: upload.split("\$")[0],
+      );
+      var doc = await _databaseService.userCollection.doc(rid).get();
+      int badge = MyUser.fromJson(doc.data()).badge;
+      await _databaseService.userCollection
+          .doc(rid)
+          .update({"badge": badge + 1});
+      await _databaseService.chatsCollection
+          .doc(cid)
+          .update({"timestamp": Timestamp.now()});
+    } else {
+      print('ERROR');
+    }
+    Navigator.pop(context);
   }
 
   Future<void> uploadImage(camera) async {
-    PermissionStatus storage = await Permission.storage.request();
-    PermissionStatus photos = await Permission.photos.request();
-    PermissionStatus camera = await Permission.camera.request();
-    if (storage.isGranted && photos.isGranted && camera.isGranted) {
-      showLoader(context);
-      String upload = await pickImage(camera);
+    showLoader(context);
+    String upload = await pickImage(camera);
 
-      print("RETURN URLL $upload");
-      if (!(upload == null || upload == '')) {
-        await _databaseService.sendMessage(
-          cid: cid,
-          sender: user.displayName,
-          receiver: name,
-          time: msgTime(),
-          rid: rid,
-          type: 1,
-          sid: user.uid,
-          msg: 'Image',
-          image: upload,
-        );
-        var doc = await _databaseService.userCollection.doc(rid).get();
-        int badge = MyUser.fromJson(doc.data()).badge;
-        await _databaseService.userCollection
-            .doc(rid)
-            .update({"badge": badge + 1});
-        await _databaseService.chatsCollection
-            .doc(cid)
-            .update({"timestamp": Timestamp.now()});
-      } else {
-        print('ERROR');
-      }
-      Navigator.pop(context);
-    } else
-      showToast(context, 'Permission not granted');
+    print("RETURN URLL $upload");
+    if (!(upload == null || upload == '')) {
+      await _databaseService.sendMessage(
+        cid: cid,
+        sender: user.displayName,
+        receiver: name,
+        time: msgTime(),
+        rid: rid,
+        type: 1,
+        sid: user.uid,
+        msg: 'Image',
+        image: upload,
+      );
+      var doc = await _databaseService.userCollection.doc(rid).get();
+      int badge = MyUser.fromJson(doc.data()).badge;
+      await _databaseService.userCollection
+          .doc(rid)
+          .update({"badge": badge + 1});
+      await _databaseService.chatsCollection
+          .doc(cid)
+          .update({"timestamp": Timestamp.now()});
+    } else {
+      print('ERROR');
+    }
+    Navigator.pop(context);
   }
 
   _launchURL(userID) async {

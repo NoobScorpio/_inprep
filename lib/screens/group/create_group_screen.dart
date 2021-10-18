@@ -314,47 +314,11 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   Future<void> uploadImage() async {
     showLoader(context);
-    String upload = await pickImage();
+    String upload = await pickImage(false);
     setState(() {
       groupImage = upload;
     });
     pop(context);
     showToast(context, "Uploaded");
-  }
-
-  Future<String> pickImage() async {
-    try {
-      File selected;
-      List<Media> media = await ImagesPicker.pick(
-        count: 1,
-        pickType: PickType.image,
-        cropOpt: CropOption(
-          aspectRatio: CropAspectRatio.custom,
-          cropType: CropType.rect, // currently for android
-        ),
-      );
-      if (media != null) {
-        selected = File(media[0].path);
-        showToast(context, "Uploading");
-        FirebaseStorage _storage;
-
-        UploadTask _uploadTask;
-        _storage = FirebaseStorage.instanceFor(
-            bucket: 'gs://inprep-c8711.appspot.com');
-        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-        // setState(() {
-        _uploadTask =
-            _storage.ref().child('images').child(fileName).putFile(selected);
-        if (_uploadTask == null)
-          return "";
-        else {
-          final snap = await _uploadTask.whenComplete(() => {});
-          return await snap.ref.getDownloadURL();
-        }
-      }
-    } catch (e) {
-      print("UPLOAD ERROR $e");
-      return "";
-    }
   }
 }
