@@ -313,12 +313,11 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   }
 
   Future<void> uploadImage() async {
-    showLoader(context);
-    String upload = await pickImage(false);
+    String upload = await pickImage(false, context);
     setState(() {
       groupImage = upload;
     });
-    pop(context);
+
     showToast(context, "Uploaded");
   }
 }

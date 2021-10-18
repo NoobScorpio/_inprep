@@ -1,45 +1,39 @@
 import 'dart:io';
 
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 void push(context, obj) {
   Navigator.push(context, MaterialPageRoute(builder: (_) => obj));
 }
 
-Future<String> pickImage(camera) async {
+Future<String> pickImage(camera, context) async {
   try {
     List<Media> media;
     File selected;
     if (!camera) {
-      if (await Permission.photos.request().isGranted &&
-          await Permission.photos.request().isGranted) {
-        media = await ImagesPicker.pick(
-          count: 1,
-          pickType: PickType.image,
-          cropOpt: CropOption(
-            aspectRatio: CropAspectRatio.custom,
-            cropType: CropType.rect, // currently for android
-          ),
-        );
-      } else
-        return "";
+      media = await ImagesPicker.pick(
+        count: 1,
+        pickType: PickType.image,
+        cropOpt: CropOption(
+          aspectRatio: CropAspectRatio.custom,
+          cropType: CropType.rect, // currently for android
+        ),
+      );
     } else {
-      if (await Permission.camera.request().isGranted) {
-        media = await ImagesPicker.openCamera(
-          pickType: PickType.image,
-          cropOpt: CropOption(
-            aspectRatio: CropAspectRatio.custom,
-            cropType: CropType.rect, // currently for android
-          ),
-        );
-      } else
-        return "";
+      media = await ImagesPicker.openCamera(
+        pickType: PickType.image,
+        cropOpt: CropOption(
+          aspectRatio: CropAspectRatio.custom,
+          cropType: CropType.rect, // currently for android
+        ),
+      );
     }
     if (media != null) {
+      showLoader(context);
       selected = File(media[0].path);
       // _storage.bucket = 'gs://inprep-c8711.appspot.com';
       FirebaseStorage _storage;
@@ -51,10 +45,12 @@ Future<String> pickImage(camera) async {
       // setState(() {
       _uploadTask =
           _storage.ref().child('images').child(fileName).putFile(selected);
-      if (_uploadTask == null)
+      if (_uploadTask == null) {
+        pop(context);
         return "";
-      else {
+      } else {
         final snap = await _uploadTask.whenComplete(() => {});
+        pop(context);
         return await snap.ref.getDownloadURL();
       }
     } else {
@@ -66,36 +62,36 @@ Future<String> pickImage(camera) async {
   }
 }
 
-Future<String> pickFile() async {
+Future<String> pickFile(context) async {
   try {
-    if (await Permission.storage.request().isGranted) {
-      final result = await FilePicker.platform.pickFiles(
-        allowMultiple: false,
-      );
-      if (result == null) {
+    final result = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+    );
+    if (result == null) {
+      return "";
+    } else {
+      showLoader(context);
+      File selected = File(result.files.single.path);
+      // _storage.bucket = 'gs://inprep-c8711.appspot.com';
+      FirebaseStorage _storage;
+
+      UploadTask _uploadTask;
+      _storage =
+          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString() +
+          ".${selected.path.split('.').last}";
+      // setState(() {
+      _uploadTask =
+          _storage.ref().child('files').child(fileName).putFile(selected);
+      if (_uploadTask == null) {
+        pop(context);
         return "";
       } else {
-        File selected = File(result.files.single.path);
-        // _storage.bucket = 'gs://inprep-c8711.appspot.com';
-        FirebaseStorage _storage;
-
-        UploadTask _uploadTask;
-        _storage = FirebaseStorage.instanceFor(
-            bucket: 'gs://inprep-c8711.appspot.com');
-        String fileName = DateTime.now().millisecondsSinceEpoch.toString() +
-            ".${selected.path.split('.').last}";
-        // setState(() {
-        _uploadTask =
-            _storage.ref().child('files').child(fileName).putFile(selected);
-        if (_uploadTask == null)
-          return "";
-        else {
-          final snap = await _uploadTask.whenComplete(() => {});
-          return await snap.ref.getDownloadURL() + "\$" + fileName;
-        }
+        final snap = await _uploadTask.whenComplete(() => {});
+        pop(context);
+        return await snap.ref.getDownloadURL() + "\$" + fileName;
       }
-    } else
-      return "";
+    }
   } catch (e) {
     print("UPLOAD ERROR $e");
     return "";

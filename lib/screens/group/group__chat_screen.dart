@@ -520,8 +520,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Future<void> uploadFile() async {
-    showLoader(context);
-    String upload = await pickFile();
+    String upload = await pickFile(context);
 
     print("RETURN URLL $upload");
     if (!(upload == null || upload == '')) {
@@ -529,12 +528,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     } else {
       print('ERROR');
     }
-    Navigator.pop(context);
   }
 
   Future<void> uploadImage(camera) async {
-    showLoader(context);
-    String upload = await pickImage(camera);
+    String upload = await pickImage(camera, context);
 
     print("RETURN URLL $upload");
     if (!(upload == null || upload == '')) {
@@ -542,6 +539,5 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     } else {
       print('ERROR');
     }
-    Navigator.pop(context);
   }
 }

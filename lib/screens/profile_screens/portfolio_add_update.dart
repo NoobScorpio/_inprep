@@ -242,52 +242,11 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
     );
   }
 
-  Future<String> pickImage() async {
-    try {
-      File selected;
-      List<Media> media = await ImagesPicker.pick(
-        count: 1,
-        pickType: PickType.image,
-        cropOpt: CropOption(
-          aspectRatio: CropAspectRatio.custom,
-          cropType: CropType.rect, // currently for android
-        ),
-      );
-      selected = File(media[0].path);
-      FirebaseStorage _storage;
-
-      UploadTask _uploadTask;
-      _storage =
-          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      // setState(() {
-      _uploadTask =
-          _storage.ref().child('images').child(fileName).putFile(selected);
-      if (_uploadTask == null)
-        return "";
-      else {
-        final snap = await _uploadTask.whenComplete(() => {});
-        return await snap.ref.getDownloadURL();
-      }
-    } catch (e) {
-      print("UPLOAD ERROR $e");
-      return "";
-    }
-  }
-
   Future<void> uploadImage(MyUser user) async {
-    PermissionStatus storage = await Permission.storage.request();
-    PermissionStatus photos = await Permission.photos.request();
-    PermissionStatus camera = await Permission.camera.request();
-    if (storage.isGranted && photos.isGranted && camera.isGranted) {
-      showLoader(context);
-      String upload = await pickImage();
-      setState(() {
-        url = upload;
-      });
-      pop(context);
-    } else
-      showToast(context, "Permission not granted");
+    String upload = await pickImage(false, context);
+    setState(() {
+      url = upload;
+    });
   }
 
   addPortfolio() async {
