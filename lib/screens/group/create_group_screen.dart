@@ -333,22 +333,24 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
           cropType: CropType.rect, // currently for android
         ),
       );
-      selected = File(media[0].path);
-      showToast(context, "Uploading");
-      FirebaseStorage _storage;
+      if (media != null) {
+        selected = File(media[0].path);
+        showToast(context, "Uploading");
+        FirebaseStorage _storage;
 
-      UploadTask _uploadTask;
-      _storage =
-          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-      // setState(() {
-      _uploadTask =
-          _storage.ref().child('images').child(fileName).putFile(selected);
-      if (_uploadTask == null)
-        return "";
-      else {
-        final snap = await _uploadTask.whenComplete(() => {});
-        return await snap.ref.getDownloadURL();
+        UploadTask _uploadTask;
+        _storage = FirebaseStorage.instanceFor(
+            bucket: 'gs://inprep-c8711.appspot.com');
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+        // setState(() {
+        _uploadTask =
+            _storage.ref().child('images').child(fileName).putFile(selected);
+        if (_uploadTask == null)
+          return "";
+        else {
+          final snap = await _uploadTask.whenComplete(() => {});
+          return await snap.ref.getDownloadURL();
+        }
       }
     } catch (e) {
       print("UPLOAD ERROR $e");

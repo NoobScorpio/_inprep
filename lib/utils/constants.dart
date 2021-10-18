@@ -11,9 +11,10 @@ void push(context, obj) {
 
 Future<String> pickImage(camera) async {
   try {
+    List<Media> media;
     File selected;
     if (!camera) {
-      List<Media> media = await ImagesPicker.pick(
+      media = await ImagesPicker.pick(
         count: 1,
         pickType: PickType.image,
         cropOpt: CropOption(
@@ -21,33 +22,35 @@ Future<String> pickImage(camera) async {
           cropType: CropType.rect, // currently for android
         ),
       );
-      selected = File(media[0].path);
     } else {
-      List<Media> media = await ImagesPicker.openCamera(
+      media = await ImagesPicker.openCamera(
         pickType: PickType.image,
         cropOpt: CropOption(
           aspectRatio: CropAspectRatio.custom,
           cropType: CropType.rect, // currently for android
         ),
       );
-      selected = File(media[0].path);
     }
+    if (media != null) {
+      selected = File(media[0].path);
+      // _storage.bucket = 'gs://inprep-c8711.appspot.com';
+      FirebaseStorage _storage;
 
-    // _storage.bucket = 'gs://inprep-c8711.appspot.com';
-    FirebaseStorage _storage;
-
-    UploadTask _uploadTask;
-    _storage =
-        FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    // setState(() {
-    _uploadTask =
-        _storage.ref().child('images').child(fileName).putFile(selected);
-    if (_uploadTask == null)
+      UploadTask _uploadTask;
+      _storage =
+          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      // setState(() {
+      _uploadTask =
+          _storage.ref().child('images').child(fileName).putFile(selected);
+      if (_uploadTask == null)
+        return "";
+      else {
+        final snap = await _uploadTask.whenComplete(() => {});
+        return await snap.ref.getDownloadURL();
+      }
+    } else {
       return "";
-    else {
-      final snap = await _uploadTask.whenComplete(() => {});
-      return await snap.ref.getDownloadURL();
     }
   } catch (e) {
     print("UPLOAD ERROR $e");

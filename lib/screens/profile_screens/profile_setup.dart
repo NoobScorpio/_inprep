@@ -47,9 +47,12 @@ class _ProfileSetupState extends State<ProfileSetup> {
       countryValue = "Select";
   final bool seeker;
   final MyUser user;
+
   _ProfileSetupState({this.seeker, this.user});
+
   final GlobalKey<ScaffoldState> _scaffoldProfileSetupKey =
       new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +62,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
 
   SharedPreferences preferences;
   final TextEditingController otherCont = TextEditingController();
+
   setValues() {
     displayNameController.text = user.displayName;
 
@@ -130,6 +134,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
     text: "",
   );
   final _formHeaderKey = GlobalKey<FormState>();
+
 //
 //              SOCIAL
 //
@@ -1347,33 +1352,27 @@ class _ProfileSetupState extends State<ProfileSetup> {
   }
 
   Future<void> uploadImage(MyUser user, cover) async {
-    PermissionStatus storage = await Permission.storage.request();
-    PermissionStatus photos = await Permission.photos.request();
-    PermissionStatus camera = await Permission.camera.request();
-    if (storage.isGranted && photos.isGranted && camera.isGranted) {
-      showLoader(context);
-      String upload = await pickImage();
-      if (upload != "") {
-        if (cover) {
+    showLoader(context);
+    String upload = await pickImage();
+    if (upload != "") {
+      if (cover) {
+        user.cover = upload;
+        await _databaseService.userCollection
+            .doc(user.uid)
+            .update(user.toJson());
+        setState(() {
           user.cover = upload;
-          await _databaseService.userCollection
-              .doc(user.uid)
-              .update(user.toJson());
-          setState(() {
-            user.cover = upload;
-          });
-        } else {
+        });
+      } else {
+        user.photoUrl = upload;
+        await _databaseService.userCollection
+            .doc(user.uid)
+            .update(user.toJson());
+        setState(() {
           user.photoUrl = upload;
-          await _databaseService.userCollection
-              .doc(user.uid)
-              .update(user.toJson());
-          setState(() {
-            user.photoUrl = upload;
-          });
-        }
+        });
       }
-      Navigator.pop(context);
-    } else
-      showToast(context, "Permission not granted");
+    }
+    Navigator.pop(context);
   }
 }

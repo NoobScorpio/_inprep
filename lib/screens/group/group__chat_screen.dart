@@ -520,38 +520,28 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
   }
 
   Future<void> uploadFile() async {
-    PermissionStatus storage = await Permission.storage.request();
-    if (storage.isGranted) {
-      showLoader(context);
-      String upload = await pickFile();
+    showLoader(context);
+    String upload = await pickFile();
 
-      print("RETURN URLL $upload");
-      if (!(upload == null || upload == '')) {
-        await sendGroupMessage(upload.split("\$")[1], 5, upload);
-      } else {
-        print('ERROR');
-      }
-      Navigator.pop(context);
-    } else
-      showToast(context, 'Permission not granted');
+    print("RETURN URLL $upload");
+    if (!(upload == null || upload == '')) {
+      await sendGroupMessage(upload.split("\$")[1], 5, upload);
+    } else {
+      print('ERROR');
+    }
+    Navigator.pop(context);
   }
 
   Future<void> uploadImage(camera) async {
-    PermissionStatus storage = await Permission.storage.request();
-    PermissionStatus photos = await Permission.photos.request();
-    PermissionStatus camera = await Permission.camera.request();
-    if (storage.isGranted && photos.isGranted && camera.isGranted) {
-      showLoader(context);
-      String upload = await pickImage(camera);
+    showLoader(context);
+    String upload = await pickImage(camera);
 
-      print("RETURN URLL $upload");
-      if (!(upload == null || upload == '')) {
-        await sendGroupMessage("Image", 1, upload);
-      } else {
-        print('ERROR');
-      }
-      Navigator.pop(context);
-    } else
-      showToast(context, 'Permission not granted');
+    print("RETURN URLL $upload");
+    if (!(upload == null || upload == '')) {
+      await sendGroupMessage("Image", 1, upload);
+    } else {
+      print('ERROR');
+    }
+    Navigator.pop(context);
   }
 }
