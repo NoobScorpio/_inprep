@@ -682,7 +682,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> uploadImage(camera) async {
-    PermissionStatus permission = await Permission.photos.request();
+    PermissionStatus permission = await Permission.storage.request();
     if (permission.isGranted) {
       showLoader(context);
       String upload = await pickImage(camera);
