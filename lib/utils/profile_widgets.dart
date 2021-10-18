@@ -664,9 +664,11 @@ Widget buildPriceRange(context, dark, {String from, String to}) {
 }
 
 Widget buildContact({Contact contact, context}) {
+  // print(contact.number);
+
   return Column(
     children: [
-      if (contact != null && contact.number != '')
+      if (contact != null && (contact.number != null && contact.number != ""))
         Row(
           children: <Widget>[
             SizedBox(width: 30.0),
@@ -681,7 +683,7 @@ Widget buildContact({Contact contact, context}) {
             ),
           ],
         ),
-      if (contact == null && contact.number == '')
+      if (contact == null || contact.number == null)
         Row(
           children: <Widget>[
             SizedBox(width: 30.0),

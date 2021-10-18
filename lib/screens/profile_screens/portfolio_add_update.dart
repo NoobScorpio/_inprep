@@ -13,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AddUpdatePortfolio extends StatefulWidget {
   const AddUpdatePortfolio({this.currUser, this.edit, this.portfolio})
@@ -275,12 +276,16 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
   }
 
   Future<void> uploadImage(MyUser user) async {
-    showLoader(context);
-    String upload = await pickImage();
-    setState(() {
-      url = upload;
-    });
-    pop(context);
+    PermissionStatus permission = await Permission.storage.request();
+    if (permission.isGranted) {
+      showLoader(context);
+      String upload = await pickImage();
+      setState(() {
+        url = upload;
+      });
+      pop(context);
+    } else
+      showToast(context, "Permission not granted");
   }
 
   addPortfolio() async {

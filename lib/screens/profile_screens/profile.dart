@@ -106,8 +106,8 @@ class _ProfileState extends State<Profile> {
           return StreamBuilder<DocumentSnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('user')
-                .doc(state.user.uid)
-                // .doc("iIthApqh0nOdUrgmLe5LRZlB3hz1")
+                // .doc(state.user.uid)
+                .doc("iIthApqh0nOdUrgmLe5LRZlB3hz1")
                 .snapshots(),
             builder: (context, snapshot) {
               // if (!isConnected) {
@@ -216,6 +216,98 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Widget getContact(data, color) {
+    return Column(
+      children: [
+        if (data != null)
+          Card(
+            elevation: 6,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0),
+              child: Column(
+                children: [
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 30.0),
+                      Icon(
+                        Icons.mail,
+                        color: color,
+                      ),
+                      SizedBox(width: 10.0),
+                      Text(
+                        "${data.email}",
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                      if (data.verified)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Icon(
+                            Icons.verified,
+                            color: Colors.green,
+                          ),
+                        ),
+                      if (!data.verified)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: InkWell(
+                            onTap: () async {
+                              showLoader(context);
+                              try {
+                                User user = FirebaseAuth.instance.currentUser;
+                                await user.reload();
+                                if (user.emailVerified) {
+                                  await _databaseService.userCollection
+                                      .doc(data.uid)
+                                      .update({"verified": true});
+                                  setState(() {
+                                    data.verified = true;
+                                  });
+                                } else {
+                                  await user.sendEmailVerification();
+                                  showSnack(
+                                      'Check your email for verification');
+                                }
+                              } catch (e) {}
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Verify now',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 10.0),
+                  buildContact(contact: data.contact, context: context),
+                  //SOCIAL MEDIA
+                  if (data.social != null)
+                    buildSocialsRow(
+                        dark: dark ?? false,
+                        fb: data.social.fb ?? "",
+                        git: data.social.git ?? "",
+                        linkedin: data.social.linkedin ?? "",
+                        insta: data.social.insta ?? '',
+                        tiktok: data.social.tiktok ?? ""),
+                  if (data.social == null)
+                    buildSocialsRow(
+                        dark: dark ?? false,
+                        fb: '',
+                        git: '',
+                        insta: '',
+                        tiktok: '',
+                        linkedin: ''),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   Widget profileColumn({MyUser data, color, seeker}) {
     if (data.profile)
       return Stack(
@@ -290,130 +382,7 @@ class _ProfileState extends State<Profile> {
                         buildTitle("Contact", dark ?? false),
                         SizedBox(height: 10.0),
 
-                        Card(
-                          elevation: 6,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 20),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: <Widget>[
-                                    SizedBox(width: 30.0),
-                                    Icon(
-                                      Icons.mail,
-                                      color: color,
-                                    ),
-                                    SizedBox(width: 10.0),
-                                    Text(
-                                      "${data.email != null ? data.email : ''}",
-                                      style: const TextStyle(fontSize: 16.0),
-                                    ),
-                                    if (data.verified)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Icon(
-                                          Icons.verified,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                    if (!data.verified)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: InkWell(
-                                          onTap: () async {
-                                            showLoader(context);
-                                            try {
-                                              User user = FirebaseAuth
-                                                  .instance.currentUser;
-                                              await user.reload();
-                                              if (user.emailVerified) {
-                                                await _databaseService
-                                                    .userCollection
-                                                    .doc(data.uid)
-                                                    .update({"verified": true});
-                                                setState(() {
-                                                  data.verified = true;
-                                                });
-                                              } else {
-                                                await user
-                                                    .sendEmailVerification();
-                                                showSnack(
-                                                    'Check your email for verification');
-                                              }
-                                            } catch (e) {}
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Verify now',
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                if (data.contact != null)
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 30.0),
-                                      Icon(
-                                        Icons.phone,
-                                        color: color,
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Text(
-                                        data.contact == null
-                                            ? 'Not Added'
-                                            : "${data.contact.code}-${data.contact.number}",
-                                        style: const TextStyle(fontSize: 16.0),
-                                      ),
-                                    ],
-                                  ),
-                                if (data.contact == null)
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 30.0),
-                                      Icon(
-                                        Icons.phone,
-                                        color: color,
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Text(
-                                        "Not Added",
-                                        style: const TextStyle(fontSize: 16.0),
-                                      ),
-                                    ],
-                                  ),
-                                //SOCIAL MEDIA
-                                if (data.social != null)
-                                  buildSocialsRow(
-                                      dark: dark ?? false,
-                                      context: context,
-                                      fb: data.social.fb,
-                                      git: data.social.git,
-                                      insta: data.social.tiktok,
-                                      tiktok: data.social.tiktok,
-                                      linkedin: data.social.linkedin),
-                                if (data.social == null)
-                                  buildSocialsRow(
-                                      dark: dark ?? false,
-                                      fb: '',
-                                      context: context,
-                                      git: '',
-                                      insta: '',
-                                      tiktok: '',
-                                      linkedin: ''),
-                              ],
-                            ),
-                          ),
-                        ),
+                        getContact(data, color),
 
                         SizedBox(height: 20.0),
                         buildTitle("Skype", dark ?? false),
@@ -542,101 +511,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(height: 20.0),
                         buildTitle("Contact", dark ?? false),
                         SizedBox(height: 5.0),
-                        if (data != null)
-                          Card(
-                            elevation: 6,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 30.0),
-                                      Icon(
-                                        Icons.mail,
-                                        color: color,
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Text(
-                                        "${data.email}",
-                                        style: const TextStyle(fontSize: 16.0),
-                                      ),
-                                      if (data.verified)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                          child: Icon(
-                                            Icons.verified,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                      if (!data.verified)
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8),
-                                          child: InkWell(
-                                            onTap: () async {
-                                              showLoader(context);
-                                              try {
-                                                User user = FirebaseAuth
-                                                    .instance.currentUser;
-                                                await user.reload();
-                                                if (user.emailVerified) {
-                                                  await _databaseService
-                                                      .userCollection
-                                                      .doc(data.uid)
-                                                      .update(
-                                                          {"verified": true});
-                                                  setState(() {
-                                                    data.verified = true;
-                                                  });
-                                                } else {
-                                                  await user
-                                                      .sendEmailVerification();
-                                                  showSnack(
-                                                      'Check your email for verification');
-                                                }
-                                              } catch (e) {}
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              'Verify now',
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10.0),
-                                  buildContact(
-                                      contact: data.contact, context: context),
-                                  //SOCIAL MEDIA
-                                  if (data.social != null)
-                                    buildSocialsRow(
-                                        dark: dark ?? false,
-                                        fb: data.social.fb ?? "",
-                                        git: data.social.git ?? "",
-                                        linkedin: data.social.linkedin ?? "",
-                                        insta: data.social.insta ?? '',
-                                        tiktok: data.social.tiktok ?? ""),
-                                  if (data.social == null)
-                                    buildSocialsRow(
-                                        dark: dark ?? false,
-                                        fb: '',
-                                        git: '',
-                                        insta: '',
-                                        tiktok: '',
-                                        linkedin: ''),
-                                ],
-                              ),
-                            ),
-                          ),
+                        getContact(data, color),
                         //PRICE RANGE
                         SizedBox(height: 20.0),
                         buildTitle("Price Range", dark ?? false),

@@ -25,6 +25,7 @@ import 'package:InPrep/utils/offer_card.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:images_picker/images_picker.dart';
 import 'package:instant/instant.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -646,65 +647,73 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> uploadFile() async {
-    showLoader(context);
-    String upload = await pickFile();
+    PermissionStatus permission = await Permission.storage.request();
+    if (permission.isGranted) {
+      showLoader(context);
+      String upload = await pickFile();
 
-    print("RETURN URLL $upload");
-    if (!(upload == null || upload == '')) {
-      await _databaseService.sendMessage(
-        cid: cid,
-        sender: user.displayName,
-        receiver: name,
-        time: msgTime(),
-        rid: rid,
-        type: 3,
-        sid: user.uid,
-        msg: upload.split("\$")[1],
-        image: upload.split("\$")[0],
-      );
-      var doc = await _databaseService.userCollection.doc(rid).get();
-      int badge = MyUser.fromJson(doc.data()).badge;
-      await _databaseService.userCollection
-          .doc(rid)
-          .update({"badge": badge + 1});
-      await _databaseService.chatsCollection
-          .doc(cid)
-          .update({"timestamp": Timestamp.now()});
-    } else {
-      print('ERROR');
-    }
-    Navigator.pop(context);
+      print("RETURN URLL $upload");
+      if (!(upload == null || upload == '')) {
+        await _databaseService.sendMessage(
+          cid: cid,
+          sender: user.displayName,
+          receiver: name,
+          time: msgTime(),
+          rid: rid,
+          type: 3,
+          sid: user.uid,
+          msg: upload.split("\$")[1],
+          image: upload.split("\$")[0],
+        );
+        var doc = await _databaseService.userCollection.doc(rid).get();
+        int badge = MyUser.fromJson(doc.data()).badge;
+        await _databaseService.userCollection
+            .doc(rid)
+            .update({"badge": badge + 1});
+        await _databaseService.chatsCollection
+            .doc(cid)
+            .update({"timestamp": Timestamp.now()});
+      } else {
+        print('ERROR');
+      }
+      Navigator.pop(context);
+    } else
+      showToast(context, "Permission not granted");
   }
 
   Future<void> uploadImage(camera) async {
-    showLoader(context);
-    String upload = await pickImage(camera);
+    PermissionStatus permission = await Permission.photos.request();
+    if (permission.isGranted) {
+      showLoader(context);
+      String upload = await pickImage(camera);
 
-    print("RETURN URLL $upload");
-    if (!(upload == null || upload == '')) {
-      await _databaseService.sendMessage(
-        cid: cid,
-        sender: user.displayName,
-        receiver: name,
-        time: msgTime(),
-        rid: rid,
-        type: 1,
-        sid: user.uid,
-        msg: 'Image',
-        image: upload,
-      );
-      var doc = await _databaseService.userCollection.doc(rid).get();
-      int badge = MyUser.fromJson(doc.data()).badge;
-      await _databaseService.userCollection
-          .doc(rid)
-          .update({"badge": badge + 1});
-      await _databaseService.chatsCollection
-          .doc(cid)
-          .update({"timestamp": Timestamp.now()});
-    } else {
-      print('ERROR');
-    }
-    Navigator.pop(context);
+      print("RETURN URLL $upload");
+      if (!(upload == null || upload == '')) {
+        await _databaseService.sendMessage(
+          cid: cid,
+          sender: user.displayName,
+          receiver: name,
+          time: msgTime(),
+          rid: rid,
+          type: 1,
+          sid: user.uid,
+          msg: 'Image',
+          image: upload,
+        );
+        var doc = await _databaseService.userCollection.doc(rid).get();
+        int badge = MyUser.fromJson(doc.data()).badge;
+        await _databaseService.userCollection
+            .doc(rid)
+            .update({"badge": badge + 1});
+        await _databaseService.chatsCollection
+            .doc(cid)
+            .update({"timestamp": Timestamp.now()});
+      } else {
+        print('ERROR');
+      }
+      Navigator.pop(context);
+    } else
+      showToast(context, 'Permission not granted');
   }
 
   _launchURL(userID) async {

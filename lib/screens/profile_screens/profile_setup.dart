@@ -23,6 +23,7 @@ import 'package:InPrep/utils/constants.dart';
 import 'package:InPrep/utils/my_divider.dart';
 import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileSetup extends StatefulWidget {
@@ -1346,27 +1347,31 @@ class _ProfileSetupState extends State<ProfileSetup> {
   }
 
   Future<void> uploadImage(MyUser user, cover) async {
-    showLoader(context);
-    String upload = await pickImage();
-    if (upload != "") {
-      if (cover) {
-        user.cover = upload;
-        await _databaseService.userCollection
-            .doc(user.uid)
-            .update(user.toJson());
-        setState(() {
+    PermissionStatus permission = await Permission.storage.request();
+    if (permission.isGranted) {
+      showLoader(context);
+      String upload = await pickImage();
+      if (upload != "") {
+        if (cover) {
           user.cover = upload;
-        });
-      } else {
-        user.photoUrl = upload;
-        await _databaseService.userCollection
-            .doc(user.uid)
-            .update(user.toJson());
-        setState(() {
+          await _databaseService.userCollection
+              .doc(user.uid)
+              .update(user.toJson());
+          setState(() {
+            user.cover = upload;
+          });
+        } else {
           user.photoUrl = upload;
-        });
+          await _databaseService.userCollection
+              .doc(user.uid)
+              .update(user.toJson());
+          setState(() {
+            user.photoUrl = upload;
+          });
+        }
       }
-    }
-    Navigator.pop(context);
+      Navigator.pop(context);
+    } else
+      showToast(context, "Permission not granted");
   }
 }
