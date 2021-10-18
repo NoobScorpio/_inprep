@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void push(context, obj) {
   Navigator.push(context, MaterialPageRoute(builder: (_) => obj));
@@ -14,22 +15,29 @@ Future<String> pickImage(camera) async {
     List<Media> media;
     File selected;
     if (!camera) {
-      media = await ImagesPicker.pick(
-        count: 1,
-        pickType: PickType.image,
-        cropOpt: CropOption(
-          aspectRatio: CropAspectRatio.custom,
-          cropType: CropType.rect, // currently for android
-        ),
-      );
+      if (await Permission.photos.request().isGranted &&
+          await Permission.photos.request().isGranted) {
+        media = await ImagesPicker.pick(
+          count: 1,
+          pickType: PickType.image,
+          cropOpt: CropOption(
+            aspectRatio: CropAspectRatio.custom,
+            cropType: CropType.rect, // currently for android
+          ),
+        );
+      } else
+        return "";
     } else {
-      media = await ImagesPicker.openCamera(
-        pickType: PickType.image,
-        cropOpt: CropOption(
-          aspectRatio: CropAspectRatio.custom,
-          cropType: CropType.rect, // currently for android
-        ),
-      );
+      if (await Permission.camera.request().isGranted) {
+        media = await ImagesPicker.openCamera(
+          pickType: PickType.image,
+          cropOpt: CropOption(
+            aspectRatio: CropAspectRatio.custom,
+            cropType: CropType.rect, // currently for android
+          ),
+        );
+      } else
+        return "";
     }
     if (media != null) {
       selected = File(media[0].path);
@@ -60,31 +68,34 @@ Future<String> pickImage(camera) async {
 
 Future<String> pickFile() async {
   try {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
-    );
-    if (result == null) {
-      return "";
-    } else {
-      File selected = File(result.files.single.path);
-      // _storage.bucket = 'gs://inprep-c8711.appspot.com';
-      FirebaseStorage _storage;
-
-      UploadTask _uploadTask;
-      _storage =
-          FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
-      String fileName = DateTime.now().millisecondsSinceEpoch.toString() +
-          ".${selected.path.split('.').last}";
-      // setState(() {
-      _uploadTask =
-          _storage.ref().child('files').child(fileName).putFile(selected);
-      if (_uploadTask == null)
+    if (await Permission.storage.request().isGranted) {
+      final result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+      );
+      if (result == null) {
         return "";
-      else {
-        final snap = await _uploadTask.whenComplete(() => {});
-        return await snap.ref.getDownloadURL() + "\$" + fileName;
+      } else {
+        File selected = File(result.files.single.path);
+        // _storage.bucket = 'gs://inprep-c8711.appspot.com';
+        FirebaseStorage _storage;
+
+        UploadTask _uploadTask;
+        _storage = FirebaseStorage.instanceFor(
+            bucket: 'gs://inprep-c8711.appspot.com');
+        String fileName = DateTime.now().millisecondsSinceEpoch.toString() +
+            ".${selected.path.split('.').last}";
+        // setState(() {
+        _uploadTask =
+            _storage.ref().child('files').child(fileName).putFile(selected);
+        if (_uploadTask == null)
+          return "";
+        else {
+          final snap = await _uploadTask.whenComplete(() => {});
+          return await snap.ref.getDownloadURL() + "\$" + fileName;
+        }
       }
-    }
+    } else
+      return "";
   } catch (e) {
     print("UPLOAD ERROR $e");
     return "";
