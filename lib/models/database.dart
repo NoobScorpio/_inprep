@@ -723,7 +723,7 @@ class DatabaseService {
                     .toLowerCase()
                     .contains(search.toLowerCase())) &&
             user.uid != currUser &&
-            !user.seeker) {
+            user.seeker) {
           searchedUsers.add(user);
         }
       }

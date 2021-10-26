@@ -266,7 +266,7 @@ class _ChatsState extends State<Chats> {
                             ),
                           ),
                         ),
-                        visible: seeker,
+                        visible: !seeker,
                       )
                     ],
                   );
@@ -304,7 +304,7 @@ class _ChatsState extends State<Chats> {
           ],
         ),
         Visibility(
-          visible: seeker ?? true,
+          visible: !seeker ?? true,
           child: Align(
             alignment: Alignment.bottomRight,
             child: InkWell(
@@ -689,7 +689,6 @@ class _ChatsState extends State<Chats> {
                           if (usr.uid == sid) {
                             group.users.remove(usr);
                             group.usersRead.remove(sid);
-                            group.usersAccepted.remove(sid);
                             group.userIDS.remove(sid);
 
                             await _databaseService.groupsCollection

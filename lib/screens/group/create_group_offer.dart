@@ -148,6 +148,12 @@ class _CreateGroupOfferScreenState extends State<CreateGroupOfferScreen> {
   createUpdateOffer(context, cost) async {
     showLoader(context);
     if (widget.edit == null) {
+      Map<String, bool> usersAccepted = {};
+      for (var usr in widget.group.users) {
+        if (usr.uid != widget.creator.uid) {
+          usersAccepted[usr.uid] = false;
+        }
+      }
       await _databaseService.groupsCollection.doc(widget.group.gid).update({
         'confirmed': false,
       });
@@ -155,6 +161,7 @@ class _CreateGroupOfferScreenState extends State<CreateGroupOfferScreen> {
           gmid: "",
           goid: '',
           accepted: false,
+          usersAccepted: usersAccepted,
           completed: false,
           creator: widget.creator,
           timezone: DateTime.now().timeZoneName,

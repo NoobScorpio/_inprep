@@ -214,10 +214,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         userIDS.add(usr.uid);
       }
       showToast(context, "Creating group");
-      Map<String, bool> usersAccepted = {}, usersSeen = {};
+      Map<String, bool> usersSeen = {};
       for (var usr in users) {
         if (usr.uid != user.uid) {
-          usersAccepted[usr.uid] = false;
           usersSeen[usr.uid] = false;
         }
       }
@@ -228,7 +227,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               photo: groupImage ?? "",
               creator: user,
               confirmed: false,
-              usersAccepted: usersAccepted,
+              offerSent: false,
               usersRead: usersSeen,
               lastMessage: "Hello Consultants !!",
               timestamp: Timestamp.now(),

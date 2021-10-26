@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.4.6+56
+version: 2.4.6+58
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -74,6 +74,7 @@ dependencies:
   salomon_bottom_bar: ^3.1.0
   flutter_intro: ^2.3.1
   jiffy: ^4.1.0
+  native_pdf_view: ^5.0.0
   # image_downloader: ^0.30.0
   
 flutter_native_splash:
@@ -102,6 +103,7 @@ flutter:
     - assets/icons/
     - assets/intro/
     - assets/categories/
+    - assets/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

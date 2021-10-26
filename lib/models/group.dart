@@ -11,14 +11,14 @@ class Group {
   Timestamp timestamp;
   List<MyUser> users;
   List<String> userIDS;
-  Map<String, bool> usersAccepted = {};
   Map<String, bool> usersRead = {};
   bool confirmed;
+  bool offerSent;
   Group(
       {this.gid,
+      this.offerSent,
       this.confirmed,
       this.lastMessage,
-      this.usersAccepted,
       this.usersRead,
       this.creator,
       this.title,
@@ -31,6 +31,7 @@ class Group {
   Group.fromJson(Map<String, dynamic> json) {
     gid = json['gid'];
     confirmed = json['confirmed'];
+    offerSent = json['offerSent'];
     lastMessage = json['lastMessage'];
     creator =
         json['creator'] != null ? new MyUser.fromJson(json['creator']) : null;
@@ -40,12 +41,7 @@ class Group {
     photo = json['photo'];
     timestamp = json['Timestamp'];
     userIDS = json['userIDS'].cast<String>();
-    if (json['usersAccepted'] != null) {
-      Map<String, dynamic> map = json['usersAccepted'];
-      for (var usr in map.keys) {
-        usersAccepted[usr] = map[usr];
-      }
-    }
+
     if (json['usersRead'] != null) {
       Map<String, dynamic> map = json['usersRead'];
       for (var usr in map.keys) {
@@ -64,8 +60,9 @@ class Group {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['gid'] = this.gid;
     data['confirmed'] = this.confirmed;
+    data['offerSent'] = this.offerSent;
     data['lastMessage'] = this.lastMessage;
-    data['usersAccepted'] = this.usersAccepted ?? {};
+
     data['usersRead'] = this.usersRead ?? {};
     if (this.creator != null) {
       data['creator'] = this.creator.toJson();

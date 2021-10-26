@@ -26,7 +26,6 @@ class _AddUpdateExperienceState extends State<AddUpdateExperience> {
   bool current = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.edit) {
       title.text = widget.experience.title;

@@ -33,7 +33,6 @@ class _AddUpdatePortfolioState extends State<AddUpdatePortfolio> {
   String url = "";
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.edit) {
       title.text = widget.portfolio.title;

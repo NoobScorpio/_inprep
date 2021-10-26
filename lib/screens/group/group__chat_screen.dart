@@ -85,25 +85,31 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                 ),
                 onSelected: (value) async {
                   if (value == 2) {
-                    if ((widget.group.confirmed ?? false))
+                    showLoader(context);
+                    var doc = await _databaseService.groupsCollection
+                        .doc(widget.group.gid)
+                        .get();
+                    Group g = Group.fromJson(doc.data());
+                    pop(context);
+                    if ((g.confirmed ?? false))
                       push(
                           context,
                           CreateGroupLinkScreen(
-                            group: widget.group,
+                            group: g,
                             creator: widget.currUser,
                           ));
                     else {
-                      showToast(context,
-                          "You have not accepted every consultant's offer");
+                      showToast(
+                          context, "Every Seeker has not accepted the offer.");
                     }
                   }
                   if (value == 1) {
-                    if (widget.group.creator.uid == widget.currUser.uid)
-                      showToast(context, "Group creator cannot create offer");
-                    else if (widget.group.usersAccepted[widget.currUser.uid]) {
-                      showToast(
-                          context, "Your offer has already been accepted");
-                    } else
+                    if (widget.group.creator.uid != widget.currUser.uid)
+                      showToast(context, "Only Group creator can create offer");
+                    else if (widget.group.offerSent)
+                      showToast(context,
+                          "Cannot send another offer until previous is cancelled or accepted");
+                    else
                       push(
                           context,
                           CreateGroupOfferScreen(
@@ -136,7 +142,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                                 Text('Create Offer')
                               ],
                             )),
-                      if (widget.currUser.seeker)
+                      if (!widget.currUser.seeker)
                         PopupMenuItem(
                             value: 2,
                             child: Row(
@@ -232,7 +238,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                         );
                       } else if (message.type == 3) {
                         //OFFER
-                        msgWidget = Text("link");
+                        // msgWidget = Text("link");
                         msgWidget = GroupLinkCard(
                           dark: dark,
                           isMe: widget.currUser.uid == message.sender.uid,

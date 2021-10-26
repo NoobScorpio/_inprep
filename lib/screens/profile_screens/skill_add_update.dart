@@ -21,7 +21,6 @@ class _AddUpdateSkillState extends State<AddUpdateSkill> {
       rank = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.edit) {
       name.text = widget.skill.name;

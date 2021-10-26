@@ -28,7 +28,6 @@ class _AddUpdateEducationState extends State<AddUpdateEducation> {
   bool current = false;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.edit) {
       institute.text = widget.education.institute;

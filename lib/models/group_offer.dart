@@ -15,10 +15,13 @@ class GroupOffer {
   bool declined;
   bool completed;
   String timezone;
+  Map<String, bool> usersAccepted = {};
   GroupOffer(
       {this.gmid,
       this.declined,
+      this.usersAccepted,
       this.goid,
+      this.gid,
       this.accepted,
       this.cost,
       this.cancel,
@@ -38,6 +41,12 @@ class GroupOffer {
         json['creator'] != null ? new MyUser.fromJson(json['creator']) : null;
     cancel = json['cancel'];
     timestamp = json['Timestamp'];
+    if (json['usersAccepted'] != null) {
+      Map<String, dynamic> map = json['usersAccepted'];
+      for (var usr in map.keys) {
+        usersAccepted[usr] = map[usr];
+      }
+    }
     completed = json['completed'];
   }
 
@@ -45,6 +54,7 @@ class GroupOffer {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['timezone'] = this.timezone;
     data['completed'] = this.completed;
+    data['usersAccepted'] = this.usersAccepted ?? {};
     data['gmid'] = this.gmid;
     data['accepted'] = this.accepted;
     data['goid'] = this.goid;

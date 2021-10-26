@@ -96,12 +96,15 @@ class GroupOfferCard extends StatelessWidget {
                                     onSelected: (value) async {
                                       if (value == 2) {
                                         groupMessage.offer.cancel = true;
-
+                                        group.offerSent = false;
                                         await _databaseService.groupsCollection
                                             .doc(group.gid)
                                             .collection('messages')
                                             .doc(groupMessage.gmid)
                                             .update(groupMessage.toJson());
+                                        await _databaseService.groupsCollection
+                                            .doc(group.gid)
+                                            .update(group.toJson());
                                       }
                                       if (value == 1) {
                                         push(
@@ -180,7 +183,10 @@ class GroupOfferCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                if (!offer.accepted && !offer.cancel)
+                                if (!(offer.accepted ||
+                                        (offer.usersAccepted[currUser.uid] ??
+                                            false)) &&
+                                    !offer.cancel)
                                   Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Container(
@@ -191,6 +197,8 @@ class GroupOfferCard extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         onPressed: () async {
+                                          // print(offer
+                                          //     .usersAccepted[currUser.uid]);
                                           if (!offer.accepted &&
                                               !offer.declined) {
                                             if (currUser.seeker &&
@@ -255,7 +263,9 @@ class GroupOfferCard extends StatelessWidget {
                                                 !isMe &&
                                                 !offer.cancel &&
                                                 !offer.declined
-                                            ? (offer.accepted
+                                            ? ((offer.accepted ||
+                                                    offer.usersAccepted[
+                                                        currUser.uid])
                                                 ? Colors.grey
                                                 : (offer.declined
                                                     ? Colors.red
@@ -264,7 +274,10 @@ class GroupOfferCard extends StatelessWidget {
                                         child: Text(
                                           offer.cancel
                                               ? 'Withdrawn'
-                                              : (offer.accepted
+                                              : ((offer.accepted ||
+                                                      (offer.usersAccepted[
+                                                              currUser.uid] ??
+                                                          false))
                                                   ? 'Accepted'
                                                   : (offer.declined
                                                       ? 'Declined'
@@ -279,7 +292,9 @@ class GroupOfferCard extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                if (offer.accepted)
+                                if (offer.accepted ||
+                                    (offer.usersAccepted[currUser.uid] ??
+                                        false))
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Center(
@@ -313,17 +328,17 @@ class GroupOfferCard extends StatelessWidget {
   }
 
   no(context) async {
-    showLoader(context);
-    groupMessage.offer.declined = true;
-    await _databaseService.groupsCollection
-        .doc(group.gid)
-        .collection('messages')
-        .doc(groupMessage.gmid)
-        .update(groupMessage.toJson());
-    sendNotification(
-        user: offer.creator,
-        message:
-            '${currUser.displayName} has declined your offer in group ${group.title}');
+    // showLoader(context);
+    // groupMessage.offer.declined = true;
+    // await _databaseService.groupsCollection
+    //     .doc(group.gid)
+    //     .collection('messages')
+    //     .doc(groupMessage.gmid)
+    //     .update(groupMessage.toJson());
+    // sendNotification(
+    //     user: offer.creator,
+    //     message:
+    //         '${currUser.displayName} has declined your offer in group ${group.title}');
     pop(context);
   }
 
@@ -350,6 +365,7 @@ class GroupOfferCard extends StatelessWidget {
                 name: offer.creator.displayName,
               )),
     );
+
     // var pid = 'TEST ${Random().nextInt(1000)}';
     Navigator.pop(context);
     if (pid != null) {
@@ -408,13 +424,14 @@ class GroupOfferCard extends StatelessWidget {
           pending: true,
         );
         var oid = await _databaseService.createOrder(order: order);
-        groupMessage.offer.accepted = true;
-        group.usersAccepted[offer.creator.uid] = true;
         bool allAccepted = true;
-        for (String accept in group.usersAccepted.keys) {
-          if (group.usersAccepted[accept] == false) allAccepted = false;
+        groupMessage.offer.usersAccepted[currUser.uid] = true;
+        for (String accept in groupMessage.offer.usersAccepted.keys) {
+          if (groupMessage.offer.usersAccepted[accept] == false)
+            allAccepted = false;
         }
         group.confirmed = allAccepted;
+        groupMessage.offer.accepted = allAccepted;
         await _databaseService.groupsCollection
             .doc(group.gid)
             .update(group.toJson());
