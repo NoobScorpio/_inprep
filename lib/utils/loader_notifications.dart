@@ -28,6 +28,7 @@ void showToast(context, String msg) {
       fontSize: 16.0);
 }
 
+const String URL = "https://appinprep.com/notify.php?";
 void commentNotification({Blog blog, user, Comment comm}) async {
   try {
     DocumentSnapshot usr =
@@ -37,7 +38,7 @@ void commentNotification({Blog blog, user, Comment comm}) async {
     var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
-          "https://inprepapp.com/notify.php?token=$token&message=$message"));
+          URL+"token=$token&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }
@@ -62,7 +63,7 @@ void commentReplyNotification({MyUser user, Reply reply}) async {
     var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
-          "https://inprepapp.com/notify.php?token=$token&message=$message"));
+          URL+"token=$token&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }
@@ -77,7 +78,7 @@ void likeNotification({blog, user}) async {
     var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
-          "https://inprepapp.com/notify.php?token=$token&message=$message"));
+          URL+"token=$token&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }
@@ -93,7 +94,7 @@ void likeCommNotification({Blog blog, user, Comment comment}) async {
     var token = "${poster.pushToken}";
     if (poster.uid != user.uid)
       await http.get(Uri.parse(
-          "https://inprepapp.com/notify.php?token=$token&message=$message"));
+          URL+"token=$token&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }
@@ -106,7 +107,7 @@ void badgeResetNotification({String uid}) async {
     MyUser poster = MyUser.fromJson(usr.data());
     await DatabaseService().userCollection.doc(uid).update({"badge": 0});
     await http.get(Uri.parse(
-        "https://inprepapp.com/notify.php?token1=${poster.pushToken}"));
+        URL+"token1=${poster.pushToken}"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }
@@ -118,7 +119,7 @@ void sendNotification({MyUser user, message}) async {
         await DatabaseService().userCollection.doc(user.uid).get();
     MyUser poster = MyUser.fromJson(usr.data());
     await http.get(Uri.parse(
-        "https://inprepapp.com/notify.php?token=${poster.pushToken}&message=$message"));
+        URL+"token=${poster.pushToken}&message=$message"));
   } catch (e) {
     print('LIKED NOTIFICATION ERROR $e');
   }

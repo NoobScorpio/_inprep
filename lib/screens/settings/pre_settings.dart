@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:InPrep/screens/settings/SupportScreen.dart';
 import 'package:InPrep/screens/settings/faqs.dart';
+import 'package:InPrep/screens/settings/privacy_screen.dart';
 import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/loginUser.dart';
 import 'package:InPrep/utils/show_case_statics.dart';
@@ -13,7 +14,7 @@ import 'package:InPrep/auth/auth.dart';
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/screens/settings/settings.dart';
 import 'package:InPrep/screens/screens/welcome.dart';
-import 'package:InPrep/utils/hyml.dart';
+import 'package:InPrep/screens/settings/terms_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -329,7 +330,8 @@ class _PreSettingsState extends State<PreSettings> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => HtmlView()));
+                                          builder: (_) =>
+                                              TermsAndConditionsScreen()));
                                 },
                                 icon: Icon(
                                   Icons.list,
@@ -342,17 +344,11 @@ class _PreSettingsState extends State<PreSettings> {
 
                               MySideNavComponent(
                                 onTap: () async {
-                                  var url =
-                                      "https://www.iubenda.com/privacy-policy/79448906";
-                                  try {
-                                    if (await canLaunch(url)) {
-                                      //print('yes');
-                                      await launch(url);
-                                    }
-                                  } catch (e) {
-                                    //print(e);
-                                    //print('Could not launch the link');
-                                  }
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              PrivacyPolicyScreen()));
                                 },
                                 icon: Icon(
                                   Icons.description,

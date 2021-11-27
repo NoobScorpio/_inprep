@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
-import 'constants.dart';
 
-class HtmlView extends StatefulWidget {
+class TermsAndConditionsScreen extends StatefulWidget {
   @override
-  _HtmlViewState createState() => _HtmlViewState();
+  _TermsAndConditionsScreenState createState() =>
+      _TermsAndConditionsScreenState();
 }
 
-class _HtmlViewState extends State<HtmlView> {
+class _TermsAndConditionsScreenState extends State<TermsAndConditionsScreen> {
   static final int _initialPage = 1;
   int _actualPageNumber = _initialPage, _allPagesCount = 0;
   bool isSampleDoc = true;
@@ -16,7 +15,7 @@ class _HtmlViewState extends State<HtmlView> {
   @override
   void initState() {
     _pdfController = PdfController(
-      document: PdfDocument.openAsset('assets/TANDC.pdf'),
+      document: PdfDocument.openAsset('assets/TACPDF.pdf'),
       initialPage: _initialPage,
     );
     super.initState();
@@ -90,31 +89,6 @@ class _HtmlViewState extends State<HtmlView> {
           });
         },
       ),
-    );
-    Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: Colors.white, //change your color here
-        ),
-        title: Text('Terms and Conditions'),
-        actions: [
-          CircleAvatar(
-            radius: 35,
-            backgroundImage: AssetImage('assets/icons/logo1024.png'),
-          ),
-        ],
-      ),
-      body: Center(
-          child: PdfView(
-        controller: _pdfController,
-      )),
-      // body: Center(
-      //   child: ListView(
-      //     children: [
-      //       HtmlWidget(khtml),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }
