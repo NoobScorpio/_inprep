@@ -2,10 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/models/offer.dart';
-import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/chat/date_time.dart';
 import 'package:InPrep/screens/group/invite_screen.dart';
-import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,9 +14,7 @@ import 'package:InPrep/models/order.dart';
 import 'package:InPrep/models/payment.dart';
 import 'package:InPrep/models/session.dart';
 import 'package:InPrep/models/message.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:instant/instant.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OfferCard extends StatelessWidget {

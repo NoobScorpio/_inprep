@@ -4,7 +4,6 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/group.dart';
 import 'package:InPrep/models/groupMessage.dart';
 import 'package:InPrep/models/group_link.dart';
-import 'package:InPrep/models/group_offer.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/constants.dart';
 import 'package:InPrep/utils/loader_notifications.dart';
@@ -12,7 +11,6 @@ import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:instant/instant.dart';
 
 class CreateGroupLinkScreen extends StatefulWidget {
   const CreateGroupLinkScreen({

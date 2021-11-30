@@ -3,7 +3,6 @@ import 'package:InPrep/models/group_offer.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'offer.dart';
 
 class GroupMessage {
   String gmid;

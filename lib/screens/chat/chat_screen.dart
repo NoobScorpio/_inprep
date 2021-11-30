@@ -10,8 +10,6 @@ import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:InPrep/models/database.dart';
@@ -19,13 +17,10 @@ import 'package:InPrep/models/message.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:InPrep/utils/image_message.dart';
-import 'package:InPrep/utils/image_upload.dart';
 import 'package:InPrep/utils/message_bubble.dart';
 import 'package:InPrep/utils/offer_card.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:images_picker/images_picker.dart';
 import 'package:instant/instant.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -70,9 +65,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
     IsolateNameServer.registerPortWithName(_port.sendPort, 'downloading');
     _port.listen((dynamic data) {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
+      // String id = data[0];
+      // DownloadTaskStatus status = data[1];
+      // int progress = data[2];
       setState(() {});
     });
     FlutterDownloader.registerCallback(Statics.downloadCallback);

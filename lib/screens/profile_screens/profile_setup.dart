@@ -10,7 +10,6 @@ import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:country_picker/country_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,6 @@ import 'package:InPrep/utils/constants.dart';
 import 'package:InPrep/utils/my_divider.dart';
 import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:images_picker/images_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileSetup extends StatefulWidget {
@@ -210,14 +208,6 @@ class _ProfileSetupState extends State<ProfileSetup> {
         ],
       ),
     );
-  }
-
-  showSnack(text) {
-    _scaffoldProfileSetupKey.currentState.showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Text('$text'),
-      duration: Duration(seconds: 2),
-    ));
   }
 
   @override
@@ -1184,8 +1174,8 @@ class _ProfileSetupState extends State<ProfileSetup> {
                                     tiktokUnameController.text == '' &&
                                     instaUnameController.text == '' &&
                                     skypeUnameController.text == '') {
-                                  showSnack(
-                                      "Enter at least one social username");
+                                  showToast(context, "Enter at least one social username");
+                                
                                 } else {
                                   MyUser currUser = await _databaseService
                                       .getcurrentUserData(user.uid);
@@ -1230,7 +1220,7 @@ class _ProfileSetupState extends State<ProfileSetup> {
                                     if (userdata) {
                                       await BlocProvider.of<UserCubit>(context)
                                           .update(currUser);
-                                      showSnack('Saved');
+                                      showToast(context, "Saved");
                                       Navigator.pop(context, true);
                                       Navigator.pop(context, true);
                                     } else {

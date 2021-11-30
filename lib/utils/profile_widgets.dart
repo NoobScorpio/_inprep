@@ -361,7 +361,7 @@ Widget buildHeader(context,
     dark,
     subCat,
     cover}) {
-  List<String> names = name.toString().split(' ');
+  // List<String> names = name.toString().split(' ');
   // print("BOOLEAN IN PROFILE $dark");
   // print(names.length);
   Color color = dark ? Colors.white : Theme.of(context).primaryColor;

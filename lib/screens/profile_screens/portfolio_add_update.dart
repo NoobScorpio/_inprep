@@ -1,8 +1,5 @@
-import 'dart:io';
 
-import 'package:InPrep/models/Skill.dart';
 import 'package:InPrep/models/database.dart';
-import 'package:InPrep/models/experience.dart';
 import 'package:InPrep/models/portfolio.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/utils/constants.dart';
@@ -10,10 +7,7 @@ import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:images_picker/images_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AddUpdatePortfolio extends StatefulWidget {
   const AddUpdatePortfolio({this.currUser, this.edit, this.portfolio})

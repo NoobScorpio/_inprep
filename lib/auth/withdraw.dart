@@ -20,13 +20,6 @@ class _WithdrawState extends State<Withdraw> {
   String url = "";
   double progress = 0;
   final GlobalKey<ScaffoldState> globKeyPay = new GlobalKey<ScaffoldState>();
-  void showSnack(text) {
-    globKeyPay.currentState.showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Text(text),
-      duration: Duration(seconds: 5),
-    ));
-  }
 
   //${widget.amount}
   @override

@@ -1,8 +1,6 @@
 import 'package:InPrep/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'meeting.dart';
-
 class GroupLink {
   String glid;
   String gmid;

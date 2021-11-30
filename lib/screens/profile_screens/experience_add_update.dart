@@ -1,4 +1,4 @@
-import 'package:InPrep/models/Skill.dart';
+
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/experience.dart';
 import 'package:InPrep/models/user.dart';

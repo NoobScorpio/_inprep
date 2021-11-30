@@ -1,9 +1,7 @@
 import 'package:InPrep/models/user.dart';
-import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:InPrep/screens/screens/test.dart';
 import 'package:InPrep/user_bloc/userLogInCubit.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:InPrep/auth/auth.dart';
@@ -86,14 +84,12 @@ class _MyAppState extends State<MyApp> {
         light: ThemeData(
           brightness: Brightness.light,
           primarySwatch: colorCustom,
-          accentColor: colorCustom,
         ),
         dark: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: colorCustom,
           primaryColor: colorCustom,
           primaryColorDark: colorCustom,
-          accentColor: colorCustom,
           bottomAppBarColor: colorCustom,
 
           primaryIconTheme: IconThemeData(color: colorCustom),

@@ -11,7 +11,6 @@ import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:instant/instant.dart';
 
 class CreateGroupOfferScreen extends StatefulWidget {
   const CreateGroupOfferScreen({
@@ -47,7 +46,7 @@ class _CreateGroupOfferScreenState extends State<CreateGroupOfferScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).primaryColor;
+    // Color color = Theme.of(context).primaryColor;
     bool dark = AdaptiveTheme.of(context).mode.isDark;
     return Scaffold(
       appBar: AppBar(
@@ -108,8 +107,8 @@ class _CreateGroupOfferScreenState extends State<CreateGroupOfferScreen> {
                                     double p =
                                         double.parse(price.text.toString());
                                     if (p >= 20.0) {
-                                      String platform =
-                                          Platform.isIOS ? 'ios' : 'android';
+                                      // String platform =
+                                      //     Platform.isIOS ? 'ios' : 'android';
                                       widget.edit != null
                                           ? showToast(context, 'Updating Offer')
                                           : showToast(
