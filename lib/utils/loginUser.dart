@@ -2,7 +2,6 @@ import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/user_bloc/userLogInCubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<bool> loginUserState(context, user) async {

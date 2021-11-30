@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
@@ -108,7 +107,7 @@ class _UploaderState extends State<Uploader> {
   UploadTask _uploadTask;
   _startUpload() async {
     // _storage.bucket = 'gs://inprep-c8711.appspot.com';
-    String filePath = 'images/${widget.file.path}';
+    // String filePath = 'images/${widget.file.path}';
     _storage =
         FirebaseStorage.instanceFor(bucket: 'gs://inprep-c8711.appspot.com');
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();

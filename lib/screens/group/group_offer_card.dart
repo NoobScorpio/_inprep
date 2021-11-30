@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:math';
 
 import 'package:InPrep/auth/payment_screen.dart';
 import 'package:InPrep/models/database.dart';

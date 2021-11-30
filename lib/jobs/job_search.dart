@@ -1,3 +1,4 @@
+import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:InPrep/auth/auth.dart';
 
@@ -19,13 +20,6 @@ class JobSearch extends StatefulWidget {
 class _JobSearchState extends State<JobSearch> {
   final job;
   final GlobalKey<ScaffoldState> jobViewKey2 = new GlobalKey<ScaffoldState>();
-  void showSnack(text) {
-    jobViewKey2.currentState.showSnackBar(SnackBar(
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Text(text),
-      duration: Duration(seconds: 1),
-    ));
-  }
 
   final uid;
   _JobSearchState({this.job, this.uid});
@@ -116,7 +110,7 @@ class _JobSearchState extends State<JobSearch> {
                   child: GestureDetector(
                     onTap: () async {
                       if (loggedin) {
-                        showSnack('Setting up chat');
+                        showToast(context, "Setting up chat");
 
                         MyUser senderUid = await AuthService().currentUser();
                         var sender = await _databaseService
@@ -149,11 +143,11 @@ class _JobSearchState extends State<JobSearch> {
                                           name: user.displayName,
                                         )));
                           } else {
-                            showSnack('Something went wrong');
+                            showToast(context, "Something went wrong");
                           }
                         }
                       } else
-                        showSnack('Login or Signup to contact');
+                        showToast(context, "Login or Signup to contact");
                     },
                     child: Container(
                       color: Colors.grey.withOpacity(0.3),

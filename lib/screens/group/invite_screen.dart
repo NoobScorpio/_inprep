@@ -2,7 +2,6 @@ import 'package:InPrep/models/chat.dart';
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/group/create_group_screen.dart';
-import 'package:InPrep/screens/profile_screens/profile_view.dart';
 import 'package:InPrep/utils/constants.dart';
 import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';

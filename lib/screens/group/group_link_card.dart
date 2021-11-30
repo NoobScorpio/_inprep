@@ -1,13 +1,11 @@
-import 'dart:io';
+
 
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/group.dart';
 import 'package:InPrep/models/groupMessage.dart';
 import 'package:InPrep/models/group_link.dart';
-import 'package:InPrep/models/group_offer.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/group/create_group_link.dart';
-import 'package:InPrep/screens/group/create_group_offer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instant/instant.dart';

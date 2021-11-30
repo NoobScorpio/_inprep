@@ -19,7 +19,6 @@ import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/chat/chat_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shimmer/shimmer.dart';
 
 class Chats extends StatefulWidget {
   static String id = 'msg';
@@ -224,7 +223,7 @@ class _ChatsState extends State<Chats> {
               if (snapshot.data.docs.length != 0) {
                 int groupDeleted = 0;
                 for (int i = 0; i < snapshot.data.docs.length; i++) {
-                  Group c = Group.fromJson(snapshot.data.docs[i].data());
+                  // Group c = Group.fromJson(snapshot.data.docs[i].data());
                 }
                 if (groupDeleted == snapshot.data.docs.length) {
                   return noGroupWidget();

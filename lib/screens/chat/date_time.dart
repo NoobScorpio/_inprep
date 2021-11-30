@@ -10,7 +10,6 @@ import 'package:InPrep/utils/mytext_field_form.dart';
 import 'package:InPrep/models/meeting.dart';
 import 'package:InPrep/models/offer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:instant/instant.dart';
 
 class MyDateTime extends StatefulWidget {
   final cid;

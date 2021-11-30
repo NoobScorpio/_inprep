@@ -648,8 +648,7 @@ class DatabaseService {
         }
       } else if (title != null) {
         if (title2 != null) {
-          print("inside title 2 ${users.size} $title2 $title");
-          int i = 0;
+        
           for (var doc in users.docs) {
             MyUser user = MyUser.fromJson(doc.data());
             // print(user.displayName);
@@ -1303,9 +1302,7 @@ class DatabaseService {
   }
 
   searchChat({String sid, String rid}) async {
-    ////print('$sid and $rid');
-    var users = [sid, rid];
-    //print('$users are MY USERS');
+
     try {
       var chats = await chatsCollection.get();
       for (var chat in chats.docs) {

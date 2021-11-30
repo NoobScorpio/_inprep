@@ -1,12 +1,10 @@
-import 'dart:io';
+
 import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:InPrep/models/database.dart';
 import 'package:InPrep/models/group.dart';
 import 'package:InPrep/models/groupMessage.dart';
-import 'package:InPrep/models/meeting.dart';
-import 'package:InPrep/models/message.dart';
 import 'package:InPrep/models/user.dart';
 import 'package:InPrep/screens/group/create_group_offer.dart';
 import 'package:InPrep/screens/group/group_info_screen.dart';
@@ -16,17 +14,11 @@ import 'package:InPrep/screens/group/group_offer_card.dart';
 import 'package:InPrep/utils/image_message.dart';
 import 'package:InPrep/utils/loader_notifications.dart';
 import 'package:InPrep/utils/message_bubble.dart';
-import 'package:InPrep/utils/offer_card.dart';
 import 'package:InPrep/utils/statics.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:images_picker/images_picker.dart';
-import 'package:instant/instant.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'create_group_link.dart';
 
@@ -41,7 +33,7 @@ class GroupChatScreen extends StatefulWidget {
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
   DatabaseService _databaseService = DatabaseService();
-  final _firestore = FirebaseFirestore.instance;
+  // final _firestore = FirebaseFirestore.instance;
   final messageController = TextEditingController();
   final ScrollController listScrollController = ScrollController();
   ReceivePort _port = ReceivePort();
@@ -51,9 +43,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
 
     IsolateNameServer.registerPortWithName(_port.sendPort, 'downloading');
     _port.listen((dynamic data) {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
+      // String id = data[0];
+      // DownloadTaskStatus status = data[1];
+      // int progress = data[2];
       setState(() {});
     });
     FlutterDownloader.registerCallback(Statics.downloadCallbackGroup);

@@ -4,9 +4,6 @@ import 'package:InPrep/screens/blog/blog_recent.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../models/user.dart';
 
 class BlogHome extends StatefulWidget {
   const BlogHome({Key key}) : super(key: key);
@@ -16,13 +13,11 @@ class BlogHome extends StatefulWidget {
 }
 
 class _BlogHomeState extends State<BlogHome> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     bool dark = AdaptiveTheme.of(context).mode.isDark;
-    final user = Provider.of<MyUser>(context);
     final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+
     // print(user.uid);
     return SafeArea(
       child: Scaffold(

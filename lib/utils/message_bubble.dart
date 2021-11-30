@@ -1,9 +1,7 @@
-import 'dart:io' as Io;
+
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
 import 'package:InPrep/utils/loader_notifications.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
@@ -55,7 +53,7 @@ class MessageBubble extends StatelessWidget {
                     topRight: Radius.circular(10.0),
                   ),
             elevation: 5.0,
-            color: isMe ? Theme.of(context).accentColor : Colors.blueGrey,
+            color: isMe ? Theme.of(context).primaryColor : Colors.blueGrey,
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 7.0, horizontal: 20.0),
               child: Text(
@@ -79,7 +77,7 @@ class MessageBubble extends StatelessWidget {
                     print("Dir $dir");
                     final taskId = await FlutterDownloader.enqueue(
                       url: url,
-                      fileName: "inPrep_${text}",
+                      fileName: "inPrep_$text",
                       savedDir: Platform.isIOS
                           ? dir.path
                           : "/storage/emulated/0/Download/",
